@@ -490,6 +490,10 @@ handleSyscall(syscall_t syscall)
         handleYield();
         break;
 
+    case Sysrwfm_Register:
+	kprintf("RWFM SYSCall\n");
+	break;
+
     default:
         fail("Invalid syscall");
     }

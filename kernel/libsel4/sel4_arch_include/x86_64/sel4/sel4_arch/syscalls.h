@@ -24,6 +24,12 @@
 #endif
 
 LIBSEL4_INLINE_FUNC void
+rwfm_Register(seL4_Word epNo)
+{
+    x64_sys_register(seL4_Sysrwfm_Register, epNo);
+}
+
+LIBSEL4_INLINE_FUNC void
 seL4_Send(seL4_CPtr dest, seL4_MessageInfo_t msgInfo)
 {
     x64_sys_send(seL4_SysSend, dest, msgInfo.words[0], seL4_GetMR(0), seL4_GetMR(1), seL4_GetMR(2), seL4_GetMR(3));

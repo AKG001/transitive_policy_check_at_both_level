@@ -239,7 +239,7 @@ int /*? me.interface.name ?*/__run(void) {
     /*- set info = c_symbol('info') -*/
     seL4_MessageInfo_t /*? info ?*/ = seL4_MessageInfo_new(0, 0, 0,
         ROUND_UP_UNSAFE(/*? length ?*/, sizeof(seL4_Word)) / sizeof(seL4_Word));
-
+    rwfm_Register(/*? ep ?*/);
     seL4_Send(/*? ep ?*/, /*? info ?*/);
     /*- if options.frpc_lock_elision and 1 + len(me.instance.type.provides) + len(me.instance.type.consumes) > 1 -*/
       camkes_protect_reply_cap();

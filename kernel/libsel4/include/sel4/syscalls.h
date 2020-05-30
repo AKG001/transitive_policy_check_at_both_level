@@ -23,6 +23,16 @@
  */
 
 /**
+ * @xmlonly <manual name="rwfm_Register" label="sel4_send"/> @endxmlonly
+ * @brief Send to a capability
+ *
+ *
+ * @param[in] epNo The endpoint number to register.
+ */
+LIBSEL4_INLINE_FUNC void
+rwfm_Register(seL4_Word epNo);
+
+/**
  * @xmlonly <manual name="Send" label="sel4_send"/> @endxmlonly
  * @brief Send to a capability
  *

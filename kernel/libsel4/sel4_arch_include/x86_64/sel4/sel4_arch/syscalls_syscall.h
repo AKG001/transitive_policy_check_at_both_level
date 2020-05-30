@@ -18,6 +18,22 @@
 #include <sel4/types.h>
 
 static inline void
+x64_sys_register(seL4_Word sys, seL4_Word epNo)
+{
+    /*Todo: Add similar function in syscalls_sysenter.h file also, to be workable in 32-bit systems.*/
+    register seL4_Word mr0 asm("r10") = epNo;
+    asm volatile (
+        "movq   %%rsp, %%rbx       \n"
+	"syscall 		   \n"
+	"movq   %%rbx, %%rsp       \n"
+	:
+	: "d" (sys),
+	"r" (mr0)
+	: "%rcx", "%rbx", "%r11"
+    );
+}
+
+static inline void
 x64_sys_send(seL4_Word sys, seL4_Word dest, seL4_Word info, seL4_Word msg0, seL4_Word msg1, seL4_Word msg2, seL4_Word msg3)
 {
     register seL4_Word mr0 asm("r10") = msg0;
