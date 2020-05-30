@@ -776,10 +776,10 @@ def main(argv, out, err):
                     except TemplateError as inst:
                         die(rendering_error(item, inst))
 
-    for i in ast._items:
-        print ("rpc start")
-        print (i.__dict__)
-        print ("rpc end")
+    #for i in ast._items:
+    #    print ("rpc start")
+    #    print (i.__dict__)
+    #    print ("rpc end")
 
     # Perform any per component special generation. This needs to happen last
     # as these template needs to run after all other capabilities have been
@@ -809,10 +809,10 @@ def main(argv, out, err):
                             done(g, outfile, item)
                 except TemplateError as inst:
                     die(rendering_error(i.name, inst))
-    for i in ast._items:
-        print ("rpc next start")
-        print (i.__dict__)
-        print ("rpc next end")
+    #for i in ast._items:
+    #    print ("rpc next start")
+    #    print (i.__dict__)
+    #    print ("rpc next end")
 
     if options.data_structure_cache_dir is not None:
         # At this point the capdl database is in the state required for applying capdl
