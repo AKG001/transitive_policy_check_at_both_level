@@ -24,9 +24,27 @@
 #endif
 
 LIBSEL4_INLINE_FUNC void
-rwfm_Register(seL4_Word epNo)
+rwfm_RegisterSubject(seL4_Word compNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
 {
-    x64_sys_register(seL4_Sysrwfm_Register, epNo);
+    x64_sys_rwfm_RegisterSubject(seL4_Sysrwfm_RegisterSubject, compNo, owner, reader, writer);
+}
+
+LIBSEL4_INLINE_FUNC void
+rwfm_RegisterInterface(seL4_Word intNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
+{
+    x64_sys_rwfm_RegisterInterface(seL4_Sysrwfm_RegisterInterface, intNo, owner, reader, writer);
+}
+
+LIBSEL4_INLINE_FUNC void
+rwfm_RegisterEndpoint(seL4_Word epNo, seL4_Word compNo, seL4_Word intNo)
+{
+    x64_sys_rwfm_RegisterEndpoint(seL4_Sysrwfm_RegisterEndpoint, epNo, compNo, intNo);
+}
+
+LIBSEL4_INLINE_FUNC void
+rwfm_RegisterThread(seL4_Word thrNo, seL4_Word compNo)
+{
+    x64_sys_rwfm_RegisterThread(seL4_Sysrwfm_RegisterThread, thrNo, compNo);
 }
 
 LIBSEL4_INLINE_FUNC void

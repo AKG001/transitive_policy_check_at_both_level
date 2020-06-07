@@ -18,18 +18,88 @@
 #include <sel4/types.h>
 
 static inline void
-x64_sys_register(seL4_Word sys, seL4_Word epNo)
+x64_sys_rwfm_RegisterSubject(seL4_Word sys, seL4_Word compNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
+{
+    /*Todo: Add similar function in syscalls_sysenter.h file also, to be workable in 32-bit systems.*/
+    register seL4_Word mr0 asm("r10") = compNo;
+    register seL4_Word mr1 asm("r8") = owner;
+    register seL4_Word mr2 asm("r9") = reader;
+    register seL4_Word mr3 asm("r15") = writer;
+    
+    asm volatile (
+        "movq   %%rsp, %%rbx        \n"
+        "syscall                    \n"
+        "movq   %%rbx, %%rsp        \n"
+        :
+        : "d" (sys),
+        "r" (mr0),
+        "r" (mr1),
+        "r" (mr2),
+        "r" (mr3)
+        : "%rcx", "%rbx", "r11"
+    );
+}
+
+static inline void
+x64_sys_rwfm_RegisterInterface(seL4_Word sys, seL4_Word intNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
+{
+    /*Todo: Add similar function in syscalls_sysenter.h file also, to be workable in 32-bit systems.*/
+    register seL4_Word mr0 asm("r10") = intNo;
+    register seL4_Word mr1 asm("r8") = owner;
+    register seL4_Word mr2 asm("r9") = reader;
+    register seL4_Word mr3 asm("r15") = writer;
+
+    asm volatile (
+        "movq   %%rsp, %%rbx        \n"
+        "syscall                    \n"
+        "movq   %%rbx, %%rsp        \n"
+        :
+        : "d" (sys),
+        "r" (mr0),
+        "r" (mr1),
+        "r" (mr2),
+        "r" (mr3)
+        : "%rcx", "%rbx", "r11"
+    );
+}
+
+static inline void
+x64_sys_rwfm_RegisterEndpoint(seL4_Word sys, seL4_Word epNo, seL4_Word compNo, seL4_Word intNo)
 {
     /*Todo: Add similar function in syscalls_sysenter.h file also, to be workable in 32-bit systems.*/
     register seL4_Word mr0 asm("r10") = epNo;
+    register seL4_Word mr1 asm("r8") = compNo;
+    register seL4_Word mr2 asm("r9") = intNo;
+
     asm volatile (
-        "movq   %%rsp, %%rbx       \n"
-	"syscall 		   \n"
-	"movq   %%rbx, %%rsp       \n"
-	:
-	: "d" (sys),
-	"r" (mr0)
-	: "%rcx", "%rbx", "%r11"
+        "movq   %%rsp, %%rbx        \n"
+        "syscall                    \n"
+        "movq   %%rbx, %%rsp        \n"
+        :
+        : "d" (sys),
+        "r" (mr0),
+        "r" (mr1),
+        "r" (mr2)
+        : "%rcx", "%rbx", "r11"
+    );
+}
+
+static inline void
+x64_sys_rwfm_RegisterThread(seL4_Word sys, seL4_Word thrNo, seL4_Word compNo)
+{
+    /*Todo: Add similar function in syscalls_sysenter.h file also, to be workable in 32-bit systems.*/
+    register seL4_Word mr0 asm("r10") = thrNo;
+    register seL4_Word mr1 asm("r8") = compNo;
+
+    asm volatile (
+        "movq   %%rsp, %%rbx        \n"
+        "syscall                    \n"
+        "movq   %%rbx, %%rsp        \n"
+        :
+        : "d" (sys),
+        "r" (mr0),
+        "r" (mr1)
+        : "%rcx", "%rbx", "r11"
     );
 }
 

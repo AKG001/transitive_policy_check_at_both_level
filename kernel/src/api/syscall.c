@@ -28,6 +28,8 @@
 #include <kernel/traps.h>
 #include <arch/machine.h>
 
+#include "rwfm/rwfm.h"
+
 #ifdef CONFIG_DEBUG_BUILD
 #include <arch/machine/capdl.h>
 #endif
@@ -490,8 +492,17 @@ handleSyscall(syscall_t syscall)
         handleYield();
         break;
 
-    case Sysrwfm_Register:
-	kprintf("RWFM SYSCall\n");
+    case Sysrwfm_RegisterSubject:
+	handleRWFMSubReg();
+	break;
+    case Sysrwfm_RegisterInterface:
+	handleRWFMIntReg();
+	break;
+    case Sysrwfm_RegisterEndpoint:
+	handleRWFMEpReg();
+	break;
+    case Sysrwfm_RegisterThread:
+	handleRWFMThreadReg();
 	break;
 
     default:

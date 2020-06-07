@@ -1045,6 +1045,16 @@ int USED main(int argc UNUSED, char *argv[]) {
     assert(argc == 2);
     assert(strcmp(argv[0], "camkes") == 0);
 
+    /*- for sub in rwfm_subjects.values(): -*/
+      /*- if me.instance.name == sub[0]: -*/
+        int compNo = /*? sub[1] ?*/;
+	int owner = /*? rwfm.subjects[sub[1]].owner ?*/;
+	int reader = /*? rwfm.subjects[sub[1]].readers ?*/;
+	int writer = /*? rwfm.subjects[sub[1]].writers ?*/;
+      /*- endif -*/
+    /*- endfor -*/
+    rwfm_RegisterSubject(compNo, owner, reader, writer);
+
     int thread_id = (int)(uintptr_t)(argv[1]);
     return post_main(thread_id);
 }

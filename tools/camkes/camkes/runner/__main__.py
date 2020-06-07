@@ -52,6 +52,11 @@ from capdl import seL4_CapTableObject, ObjectAllocator, CSpaceAllocator, \
 
 from camkes.parser import parse_file, ParseError
 
+#RWFM BOUND STARTS HERE
+#Integrating RWFM extension
+from camkes.runner.rwfm_extension import *
+#RWFM BOUND ENDS HERE
+
 CAPDL_STATE_PICKLE = 'capdl_state.p'
 
 class ParserOptions():
@@ -428,6 +433,26 @@ def main(argv, out, err):
     assembly = ast.assembly
     if assembly is None:
         die('No assembly found')
+
+    # RWFM BOUND STARTS
+    #(RWFM) Figure out subjects (as clients) and connections.
+    find_subjects_and_connections(assembly)
+
+    #(RWFM) Extracting the interfaces which are considered as objects.
+    find_interfaces(assembly)
+
+    #(RWFM) Extracting from interfaces to RWFM Monitor from every component
+    find_rwfm_from_end_interfaces(assembly)
+
+    #(RWFM) Generating the initial labels for subjects and objects.
+    generate_subject_initial_labels()
+
+    generate_object_initial_labels()
+
+    generate_connections_initial_labels()
+
+    generate_final_initial_labels()
+    #RWFM BOUND ENDS
 
     # Do some extra checks if the user asked for verbose output.
     if options.verbosity >= 2:

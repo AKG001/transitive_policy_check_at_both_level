@@ -51,6 +51,9 @@ from camkes.internal.version import version
 from camkes.templates import macros, TemplateError
 from .NameMangling import TEMPLATES, FILTERS, Perspective
 
+#(RWFM)
+from camkes.runner.rwfm_extension import *
+
 def new_context(entity, assembly, obj_space, cap_space, shmem, kept_symbols, fill_frames, templates, **kwargs):
     '''Create a new default context for rendering.'''
     return dict(list(__builtins__.items()) + list({
@@ -133,6 +136,12 @@ def new_context(entity, assembly, obj_space, cap_space, shmem, kept_symbols, fil
         # to actually call this `self` to lead to more pythonic templates, but
         # `self` inside template blocks refers to the jinja2 parser.
         'me':entity,
+
+        #(RWFM) component
+        'rwfm': get_rwfm_object(),
+        'rwfm_subjects': get_subject_list(),
+        'rwfm_objects': get_object_list(),
+        'rwfm_from_end_interfaces': get_rwfm_from_end_interfaces_list(),
 
         # The AST assembly's configuration.
         'configuration':assembly.configuration,
