@@ -1,13 +1,13 @@
 #include <kernel/thread.h>
 #include <rwfm/rwfmmodel.c>
 
-int currsub=0, ns=5;
-SUBJECT s[5];
+int currsub=0, ns=10;
+SUBJECT s[10];
 int currobj=0, no=10;
 OBJECT o[10];
 epMapping epMap[10];
 int currep=0;
-thrMapping thrMap[5];
+thrMapping thrMap[10];
 int currthr=0;
 
 void handleRWFMSubReg(void);
@@ -27,10 +27,8 @@ void handleRWFMSubReg(void)
     s[currsub].writers	    = getRegister(thread, msgRegisters[3]);
     ++currsub;
     
-    if (currsub == 2){
-      for(int i=0;i<currsub;i++) 
-	kprintf("sub id: %d owner: %d readers: %ld writers: %ld\n", s[i].sub_id_index, s[i].owner, s[i].readers, s[i].writers);
-    }
+    int i = currsub-1;
+    kprintf("sub id: %d owner: %d readers: %ld writers: %ld\n", s[i].sub_id_index, s[i].owner, s[i].readers, s[i].writers);
 }
 
 void handleRWFMIntReg(void)
@@ -45,10 +43,8 @@ void handleRWFMIntReg(void)
     o[currobj].writers      = getRegister(thread, msgRegisters[3]);
     ++currobj;
 
-    if (currobj == 2){
-      for(int i=0;i<currobj;i++)
-        kprintf("obj id: %d owner: %d readers: %ld writers: %ld\n", o[i].obj_id_index, o[i].owner, o[i].readers, o[i].writers);
-    }
+    int i = currobj-1;
+    kprintf("obj id: %d owner: %d readers: %ld writers: %ld\n", o[i].obj_id_index, o[i].owner, o[i].readers, o[i].writers);
 }
 
 void handleRWFMEpReg(void)
@@ -61,6 +57,9 @@ void handleRWFMEpReg(void)
     epMap[currep].compNo  = getRegister(thread, msgRegisters[1]);
     epMap[currep].intNo   = getRegister(thread, msgRegisters[2]);
     ++currep;
+
+    int i = currep-1;
+    kprintf("Ep id: %d CompNo: %d IntNo: %d\n", epMap[i].epNo, epMap[i].compNo, epMap[i].intNo);
 }
 
 void handleRWFMThreadReg(void)
@@ -72,4 +71,8 @@ void handleRWFMThreadReg(void)
     thrMap[currthr].thrNo  = getRegister(thread, msgRegisters[0]);
     thrMap[currthr].compNo = getRegister(thread, msgRegisters[1]);
     ++currthr;
+
+    int i = currthr-1;
+    kprintf("thr id: %d compNo: %d\n", thrMap[i].thrNo, thrMap[i].compNo);
+
 }

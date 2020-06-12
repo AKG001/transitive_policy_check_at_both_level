@@ -182,6 +182,24 @@ int /*? me.interface.name ?*/__run(void) {
   void
 /*- endif -*/
 ) {
+    //Registering Endpoint for RWFM: BOUND STARTS
+        /*- for sub in rwfm_subjects.values(): -*/
+          /*- if me.instance.name == sub[0]: -*/
+            int compNo = /*? sub[1] ?*/;
+          /*- endif -*/
+        /*- endfor -*/
+        /*- for obj in rwfm_objects.values(): -*/
+          /*- if me.interface.name == obj[0]: -*/
+            int intNo = /*? obj[1] ?*/;
+            int owner = /*? rwfm.objects[obj[1]].owner ?*/;
+            int reader = /*? rwfm.objects[obj[1]].readers ?*/;
+            int writer = /*? rwfm.objects[obj[1]].writers ?*/;
+          /*- endif -*/
+        /*- endfor -*/
+	rwfm_RegisterInterface(intNo, owner, reader, writer);
+        rwfm_RegisterEndpoint(/*? ep ?*/, compNo, intNo);
+    //RWFM: BOUND ENDS
+
     _TIMESTAMP("glue code entry");
 
     /*- if not options.frpc_lock_elision or 1 + len(me.instance.type.provides) + len(me.instance.type.consumes) > 1 -*/

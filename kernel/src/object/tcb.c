@@ -338,6 +338,7 @@ copyMRs(tcb_t *sender, word_t *sendBuf, tcb_t *receiver,
     for (i = 0; i < n && i < n_msgRegisters; i++) {
         setRegister(receiver, msgRegisters[i],
                     getRegister(sender, msgRegisters[i]));
+	kprintf("Name: %s  Name: %s Mssg copied: %ld\n", sender->tcbName, receiver->tcbName, getRegister(sender, msgRegisters[i]));
     }
 
     if (!recvBuf || !sendBuf) {
@@ -347,6 +348,7 @@ copyMRs(tcb_t *sender, word_t *sendBuf, tcb_t *receiver,
     /* Copy out-of-line words */
     for (; i < n; i++) {
         recvBuf[i + 1] = sendBuf[i + 1];
+	kprintf("Name: %s  Name: %s BMssg copied: %ld\n", sender->tcbName, receiver->tcbName, recvBuf[i+1]);
     }
 
     return i;

@@ -183,6 +183,24 @@ int /*? me.interface.name ?*/__run(void) {
     /*# Check any typedefs we have been given are not arrays. #*/
     /*- include 'call-array-typedef-check.c' -*/
 
+    //Registering Endpoint for RWFM: BOUND STARTS
+ 	/*- for sub in rwfm_subjects.values(): -*/
+	  /*- if me.instance.name == sub[0]: -*/
+	    int compNo = /*? sub[1] ?*/;
+	  /*- endif -*/
+	/*- endfor -*/
+	/*- for obj in rwfm_objects.values(): -*/
+	  /*- if me.interface.name == obj[0]: -*/
+	    int intNo = /*? obj[1] ?*/;
+            int owner = /*? rwfm.objects[obj[1]].owner ?*/;
+            int reader = /*? rwfm.objects[obj[1]].readers ?*/;
+            int writer = /*? rwfm.objects[obj[1]].writers ?*/;
+	  /*- endif -*/
+	/*- endfor -*/
+	rwfm_RegisterInterface(intNo, owner, reader, writer);
+	rwfm_RegisterEndpoint(/*? ep ?*/, compNo, intNo);
+    //RWFM: BOUND ENDS
+
     while (1) {
         /*- set info = c_symbol('info') -*/
         seL4_MessageInfo_t /*? info ?*/ = seL4_Recv(/*? ep ?*/, NULL);
