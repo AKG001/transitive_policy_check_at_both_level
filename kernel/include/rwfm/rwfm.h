@@ -28,7 +28,7 @@ void handleRWFMSubReg(void)
     ++currsub;
     
     int i = currsub-1;
-    kprintf("sub id: %d owner: %d readers: %ld writers: %ld\n", s[i].sub_id_index, s[i].owner, s[i].readers, s[i].writers);
+    kprintf("Thread: %s sub id: %d owner: %d readers: %ld writers: %ld\n", thread->tcbName, s[i].sub_id_index, s[i].owner, s[i].readers, s[i].writers);
 }
 
 void handleRWFMIntReg(void)
@@ -44,7 +44,7 @@ void handleRWFMIntReg(void)
     ++currobj;
 
     int i = currobj-1;
-    kprintf("obj id: %d owner: %d readers: %ld writers: %ld\n", o[i].obj_id_index, o[i].owner, o[i].readers, o[i].writers);
+    kprintf("Thread: %s, obj id: %d owner: %d readers: %ld writers: %ld\n", thread->tcbName, o[i].obj_id_index, o[i].owner, o[i].readers, o[i].writers);
 }
 
 void handleRWFMEpReg(void)
@@ -59,7 +59,7 @@ void handleRWFMEpReg(void)
     ++currep;
 
     int i = currep-1;
-    kprintf("Ep id: %d CompNo: %d IntNo: %d\n", epMap[i].epNo, epMap[i].compNo, epMap[i].intNo);
+    kprintf("Thread: %s, Ep id: %d CompNo: %d IntNo: %d\n", thread->tcbName, epMap[i].epNo, epMap[i].compNo, epMap[i].intNo);
 }
 
 void handleRWFMThreadReg(void)
@@ -73,6 +73,6 @@ void handleRWFMThreadReg(void)
     ++currthr;
 
     int i = currthr-1;
-    kprintf("thr id: %d compNo: %d\n", thrMap[i].thrNo, thrMap[i].compNo);
+    kprintf("Thread: %s, thr id: %d compNo: %d\n", thread->tcbName, thrMap[i].thrNo, thrMap[i].compNo);
 
 }
