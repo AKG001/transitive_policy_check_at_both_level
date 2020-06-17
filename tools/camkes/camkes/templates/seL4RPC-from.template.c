@@ -189,7 +189,7 @@ int /*? me.interface.name ?*/__run(void) {
           /*- endif -*/
         /*- endfor -*/
         /*- for obj in rwfm_objects.values(): -*/
-          /*- if me.interface.name == obj[0]: -*/
+          /*- if me.interface.name == obj[0] and me.instance.name == obj[3]: -*/
             int intNo = /*? obj[1] ?*/;
             int owner = /*? rwfm.objects[obj[1]].owner ?*/;
             int reader = /*? rwfm.objects[obj[1]].readers ?*/;
