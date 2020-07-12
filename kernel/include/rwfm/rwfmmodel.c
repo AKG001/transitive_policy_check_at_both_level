@@ -4,8 +4,9 @@
 typedef unsigned long int USER_SET;
 typedef unsigned int uint;
 
-
+//Todo: Add descriptions for each struct field.
 typedef struct subject {
+    char compName[20];
     uint sub_id_index;
     uint owner;
     USER_SET readers;
@@ -13,8 +14,9 @@ typedef struct subject {
 } SUBJECT;
 
 typedef struct object {
+    char objName[20];
     uint obj_id_index;
-    uint owner;						//index of the user id in ALL_UID array
+    uint owner;					//index of the user id in ALL_UID array
     USER_SET readers;				//the bits in places of readers are 1
     USER_SET writers;				//the bits in places of writers are 1 
 } OBJECT;
@@ -22,12 +24,16 @@ typedef struct object {
 typedef struct epmapping { 			//struct for endpoint to camkes component ID and interface ID mapping
     uint epNo;
     uint compNo;
+    char compName[20];
     uint intNo;
+    char intName[20];
 } epMapping;
 
 typedef struct threadmapping {			//struct for thread id mapping with camkes component ID mapping
     uint thrNo;
+    char thrName[20];
     uint compNo;
+    char compName[20];
 } thrMapping;
 
 

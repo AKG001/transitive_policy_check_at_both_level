@@ -24,27 +24,27 @@
 #endif
 
 LIBSEL4_INLINE_FUNC void
-rwfm_RegisterSubject(seL4_Word compNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
+rwfm_RegisterSubject(char *compName, seL4_Word compNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
 {
-    x64_sys_rwfm_RegisterSubject(seL4_Sysrwfm_RegisterSubject, compNo, owner, reader, writer);
+    x64_sys_rwfm_RegisterSubject(seL4_Sysrwfm_RegisterSubject, compName, compNo, owner, reader, writer);
 }
 
 LIBSEL4_INLINE_FUNC void
-rwfm_RegisterInterface(seL4_Word intNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
+rwfm_RegisterInterface(char* intName, seL4_Word intNo, seL4_Word owner, seL4_Word reader, seL4_Word writer)
 {
-    x64_sys_rwfm_RegisterInterface(seL4_Sysrwfm_RegisterInterface, intNo, owner, reader, writer);
+    x64_sys_rwfm_RegisterInterface(seL4_Sysrwfm_RegisterInterface, intName, intNo, owner, reader, writer);
 }
 
 LIBSEL4_INLINE_FUNC void
-rwfm_RegisterEndpoint(seL4_Word epNo, seL4_Word compNo, seL4_Word intNo)
+rwfm_RegisterEndpoint(seL4_Word epNo, seL4_Word compNo, char* compName, seL4_Word intNo, char* intName)
 {
-    x64_sys_rwfm_RegisterEndpoint(seL4_Sysrwfm_RegisterEndpoint, epNo, compNo, intNo);
+    x64_sys_rwfm_RegisterEndpoint(seL4_Sysrwfm_RegisterEndpoint, epNo, compNo, compName, intNo, intName);
 }
 
 LIBSEL4_INLINE_FUNC void
-rwfm_RegisterThread(seL4_Word thrNo, seL4_Word compNo)
+rwfm_RegisterThread(seL4_Word thrNo, char* thrName, seL4_Word compNo, char* compName)
 {
-    x64_sys_rwfm_RegisterThread(seL4_Sysrwfm_RegisterThread, thrNo, compNo);
+    x64_sys_rwfm_RegisterThread(seL4_Sysrwfm_RegisterThread, thrNo, thrName, compNo, compName);
 }
 
 LIBSEL4_INLINE_FUNC void

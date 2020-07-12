@@ -1053,7 +1053,7 @@ int USED main(int argc UNUSED, char *argv[]) {
 	int writer = /*? rwfm.subjects[sub[1]].writers ?*/;
       /*- endif -*/
     /*- endfor -*/
-    rwfm_RegisterSubject(compNo, owner, reader, writer);
+    rwfm_RegisterSubject("/*? me.instance.name ?*/", compNo, owner, reader, writer);
 
     int thread_id = (int)(uintptr_t)(argv[1]);
     return post_main(thread_id);

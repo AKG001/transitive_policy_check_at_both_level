@@ -196,8 +196,8 @@ int /*? me.interface.name ?*/__run(void) {
             int writer = /*? rwfm.objects[obj[1]].writers ?*/;
           /*- endif -*/
         /*- endfor -*/
-	rwfm_RegisterInterface(intNo, owner, reader, writer);
-        rwfm_RegisterEndpoint(/*? ep ?*/, compNo, intNo);
+	rwfm_RegisterInterface("/*? me.interface.name ?*/", intNo, owner, reader, writer);
+        rwfm_RegisterEndpoint(/*? ep ?*/, compNo, "/*? me.instance.name ?*/", intNo, "/*? me.interface.name ?*/");
     //RWFM: BOUND ENDS
 
     _TIMESTAMP("glue code entry");
