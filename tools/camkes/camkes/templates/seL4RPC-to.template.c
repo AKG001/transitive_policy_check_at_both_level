@@ -197,7 +197,7 @@ int /*? me.interface.name ?*/__run(void) {
             int writer = /*? rwfm.objects[obj[1]].writers ?*/;
 	  /*- endif -*/
 	/*- endfor -*/
-	rwfm_RegisterInterface("/*? me.interface.name ?*/", intNo, owner, reader, writer);
+	rwfm_RegisterInterface("/*?me.instance.name?*/:/*? me.interface.name ?*/", intNo, owner, reader, writer);
 	rwfm_RegisterEndpoint(/*? ep ?*/, compNo, "/*? me.instance.name ?*/", intNo, "/*? me.interface.name ?*/");
     //RWFM: BOUND ENDS
 
