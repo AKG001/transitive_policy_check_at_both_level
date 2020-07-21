@@ -1,0 +1,7 @@
+import "../../interfaces/HelloSimple.camkes";
+
+component Server {
+    provides HelloSimple h3;
+    provides HelloSimple h6;
+}
+

@@ -1,16 +1,14 @@
 import <std_connector.camkes>;
 
-import "components/Client1/Client1.camkes";
-import "components/Client2/Client2.camkes";
-import "components/Echo/Echo.camkes";
+import "components/Client/Client.camkes";
+import "components/Server/Server.camkes";
 
 assembly {
     composition {
-        component Client1 client1;
-        component Client2 client2;
-        component Echo echo;
+        component Client client;
+        component Server server;
 
-        connection seL4RPC h1(from client1.h2, to echo.h3);
-        connection seL4RPC h4(from echo.h5, to client2.h6);
+        connection seL4RPC h1(from client.h2, to server.h3);
+        connection seL4RPC h4(from client.h5, to server.h6);
    }
 };
