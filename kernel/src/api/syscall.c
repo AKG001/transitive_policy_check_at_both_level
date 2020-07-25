@@ -27,8 +27,8 @@
 #include <string.h>
 #include <kernel/traps.h>
 #include <arch/machine.h>
-
-#include "rwfm/rwfm.h"
+//RWFM model inclusion
+#include <rwfm/rwfm.h>
 
 #ifdef CONFIG_DEBUG_BUILD
 #include <arch/machine/capdl.h>
@@ -394,7 +394,7 @@ handleRecv(bool_t isBlocking)
             handleFault(NODE_STATE(ksCurThread));
             break;
         }
-
+	registerEpptrPerEp(EP_PTR(cap_endpoint_cap_get_capEPPtr(lu_ret.cap)), epCPtr);
         deleteCallerCap(NODE_STATE(ksCurThread));
         receiveIPC(NODE_STATE(ksCurThread), lu_ret.cap, isBlocking);
         break;

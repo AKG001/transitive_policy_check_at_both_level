@@ -29,6 +29,7 @@
 #include <machine.h>
 #include <util.h>
 #include <string.h>
+//#include "rwfm/rfm.h"
 
 word_t getObjectSize(word_t t, word_t userObjSize)
 {
@@ -546,8 +547,9 @@ decodeInvocation(word_t invLabel, word_t length,
             current_syscall_error.invalidCapNumber = 0;
             return EXCEPTION_SYSCALL_ERROR;
         }
-
-        setThreadState(NODE_STATE(ksCurThread), ThreadState_Restart);
+	//RWFM epptr registeration per ep.
+	registerEpptrPerEp(EP_PTR(cap_endpoint_cap_get_capEPPtr(cap)), capIndex);
+	setThreadState(NODE_STATE(ksCurThread), ThreadState_Restart);
         return performInvocation_Endpoint(
                    EP_PTR(cap_endpoint_cap_get_capEPPtr(cap)),
                    cap_endpoint_cap_get_capEPBadge(cap),

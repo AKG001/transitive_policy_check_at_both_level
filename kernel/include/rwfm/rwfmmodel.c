@@ -1,5 +1,7 @@
-//#include<stdlib.h>
-//#include<stdio.h>
+#include <arch/object/structures_gen.h>
+
+#define SUCCESS 0
+#define FAILURE 1
 
 typedef unsigned long int USER_SET;
 typedef unsigned int uint;
@@ -27,6 +29,7 @@ typedef struct epmapping { 			//struct for endpoint to camkes component ID and i
     char compName[20];
     uint intNo;
     char intName[20];
+    endpoint_t *epptr;
 } epMapping;
 
 typedef struct threadmapping {			//struct for thread id mapping with camkes component ID mapping
@@ -38,18 +41,17 @@ typedef struct threadmapping {			//struct for thread id mapping with camkes comp
 
 
 
-int add_user_to_label(int user_to_add, USER_SET * label);
-int is_user_in_set(int user_id_index, USER_SET * set);
-USER_SET set_union(USER_SET * set1, USER_SET * set2);
-USER_SET set_intersection(USER_SET * set1, USER_SET * set2);
-int is_subset_of(USER_SET * set1, USER_SET * set2);
-int is_superset_of(USER_SET * set1, USER_SET * set2);
-int do_read(uint sub_id_index,USER_SET *subject_readers,USER_SET *subject_writers,USER_SET *object_readers,USER_SET *object_writers);
-int do_write(uint sub_id_index,USER_SET *subject_readers,USER_SET *subject_writers,USER_SET *object_readers,USER_SET *object_writers);
-SUBJECT* get_sub_by_id(SUBJECT *sub_list,uint sub_id,int ns);
-OBJECT* get_obj_by_id(OBJECT *obj_list,uint obj_id,int no);
-
-
+int add_user_to_label(int, USER_SET *);
+int is_user_in_set(int, USER_SET *);
+USER_SET set_union(USER_SET *, USER_SET *);
+USER_SET set_intersection(USER_SET *, USER_SET *);
+int is_subset_of(USER_SET *, USER_SET *);
+int is_superset_of(USER_SET *, USER_SET *);
+int do_read(uint, USER_SET *, USER_SET *, USER_SET *,USER_SET *);
+int do_write(uint, USER_SET *,USER_SET *, USER_SET *, USER_SET *);
+void update_labels(uint, USER_SET *, USER_SET *, USER_SET *, USER_SET *);
+SUBJECT* get_sub_by_id(SUBJECT *, uint, int);
+OBJECT* get_obj_by_id(OBJECT *,uint, int);
 
 int add_user_to_label(int user_to_add, USER_SET * label) {
     unsigned long long int max = -1;
@@ -113,35 +115,37 @@ int is_superset_of(USER_SET * set1, USER_SET * set2) {
 
 int do_read(uint sub_id_index,USER_SET *subject_readers,USER_SET *subject_writers,USER_SET *object_readers,USER_SET *object_writers)
 {
-    printf("\nSubject\nReaders:%ld\nWriters:%ld",*subject_readers,*subject_writers);
-    printf("\nObject\nReaders:%ld\nWriters:%ld",*object_readers,*object_writers);
+    printf("Subject: %d Readers:%ld  Writers:%ld\n",sub_id_index, *subject_readers,*subject_writers);
+    printf("Object  Readers:%ld  Writers:%ld\n",*object_readers,*object_writers);
     if(is_user_in_set(sub_id_index,object_readers))         // Read Rule
-    {
-        *subject_readers = set_intersection(subject_readers,object_readers);  // Modify Reader Set
-        *subject_writers = set_union(subject_writers,object_writers);        // Modify Writer Set
-        printf("\nUpdated Labels");
-        printf("\nSubject \nReaders:%ld\nWriters:%ld",*subject_readers,*subject_writers);
-        printf("\nObject \nReaders:%ld\nWriters:%ld",*object_readers,*object_writers);
-        return 0;
-    }
+                return SUCCESS;
     else
     {
-        printf("\n***** ERROR : User is not in reader set *****\n");
-        return 1;
+        printf("\n***** ERROR : Read rule is violated. *****\n");
+        return FAILURE;
     }
 }
 
 int do_write(uint sub_id_index,USER_SET *subject_readers,USER_SET *subject_writers,USER_SET *object_readers,USER_SET *object_writers)
 {
-    printf("\nSubject\nReaders:%ld\nWriters:%ld",*subject_readers,*subject_writers);
-    printf("\nObject\nReaders:%ld\nWriters:%ld",*object_readers,*object_writers);
+    printf("Subject: %d Readers:%ld  Writers:%ld\n",sub_id_index, *subject_readers,*subject_writers);
+    printf("Object  Readers:%ld  Writers:%ld\n",*object_readers,*object_writers);
     if(is_user_in_set(sub_id_index,object_writers) && is_subset_of(object_readers,subject_readers) && is_superset_of(object_writers,subject_writers))
-    return 0;         // Write Rule
+    return SUCCESS;         // Write Rule
     else
     {
-        printf("\n***** ERROR : Write rule is violated *****\n");
-        return 1;
+        printf("\n***** ERROR : Write rule is violated. *****\n");
+        return FAILURE;
     }
+}
+
+void update_labels(uint sub_id_index,USER_SET *subject_readers,USER_SET *subject_writers,USER_SET *object_readers,USER_SET *object_writers)
+{
+  *subject_readers = set_intersection(subject_readers,object_readers);  // Modify Reader Set
+  *subject_writers = set_union(subject_writers,object_writers);        // Modify Writer Set
+  printf("Updated Labels\n");
+  printf("Subject: %d Readers:%ld  Writers:%ld\n",sub_id_index, *subject_readers,*subject_writers);
+  printf("Object  Readers:%ld  Writers:%ld\n",*object_readers,*object_writers);
 }
 
 SUBJECT* get_sub_by_id(SUBJECT *sub_list,uint sub_id,int ns)
