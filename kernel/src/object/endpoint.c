@@ -79,51 +79,50 @@ sendIPC(bool_t blocking, bool_t do_call, word_t badge,
         /* Haskell error "Receive endpoint queue must not be empty" */
         assert(dest);
 
-	/* Check with RFWM if the transfer is allowed or not. */
-	int reqStatus = isRWFMRequired(thread, dest);
-	//kprintf("Status: %d \n", reqStatus);
-	endpoint_t *destEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&dest->tcbState);
-	//kprintf("Before: %s %d %s %d\n", thread->tcbName,
-	//		getIntNo(thread->tcbName, epptr), dest->tcbName, getIntNo(dest->tcbName, destEpptr));
-	int flag = SUCCESS;
-	if (reqStatus == SUCCESS) {
-	/* check whether write is allowed for sender or not. */
-	flag = checkRWFMWrite(thread->tcbName, epptr);
-	/* check whether read is allowed for receiver or not. */
-	flag = flag | checkRWFMRead(dest->tcbName, destEpptr);
-	}
-
-	if (flag == SUCCESS) {
-        /* Dequeue the first TCB */
-        queue = tcbEPDequeue(dest, queue);
-        ep_ptr_set_queue(epptr, queue);
-
-        if (!queue.head) {
-            endpoint_ptr_set_state(epptr, EPState_Idle);
+        /* Check with RFWM if the transfer is allowed or not. */
+        int reqStatus = isRWFMRequired(thread, dest);
+        //kprintf("Status: %d \n", reqStatus);
+        endpoint_t *destEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&dest->tcbState);
+        //kprintf("Before: %s %d %s %d\n", thread->tcbName,
+        //		getIntNo(thread->tcbName, epptr), dest->tcbName, getIntNo(dest->tcbName, destEpptr));
+        int flag = SUCCESS;
+        if (reqStatus == SUCCESS) {
+          /* check whether write is allowed for sender or not. */
+          flag = checkRWFMWrite(thread->tcbName, epptr);
+          /* check whether read is allowed for receiver or not. */
+          flag = flag | checkRWFMRead(dest->tcbName, destEpptr);
         }
 
-        /* Do the transfer */
-        doIPCTransfer(thread, epptr, badge, canGrant, dest);
+        if (flag == SUCCESS) {
+          /* Dequeue the first TCB */
+          queue = tcbEPDequeue(dest, queue);
+          ep_ptr_set_queue(epptr, queue);
 
-	if (reqStatus == SUCCESS)  rwfmUpdateLabels(dest->tcbName,
-			(endpoint_t *)thread_state_ptr_get_blockingObject(&dest->tcbState));
+          if (!queue.head) {
+              endpoint_ptr_set_state(epptr, EPState_Idle);
+          }
 
-        setThreadState(dest, ThreadState_Running);
-        possibleSwitchTo(dest);
+          /* Do the transfer */
+          doIPCTransfer(thread, epptr, badge, canGrant, dest);
 
-        if (do_call ||
-                seL4_Fault_ptr_get_seL4_FaultType(&thread->tcbFault) != seL4_Fault_NullFault) {
-            if (canGrant) {
-                setupCallerCap(thread, dest);
-            } else {
-                setThreadState(thread, ThreadState_Inactive);
-            }
-        }
+          if (reqStatus == SUCCESS)  rwfmUpdateLabels(dest->tcbName,
+                             (endpoint_t *)thread_state_ptr_get_blockingObject(&dest->tcbState));
+
+          setThreadState(dest, ThreadState_Running);
+          possibleSwitchTo(dest);
+
+          if (do_call ||
+                  seL4_Fault_ptr_get_seL4_FaultType(&thread->tcbFault) != seL4_Fault_NullFault) {
+              if (canGrant) {
+                  setupCallerCap(thread, dest);
+              } else {
+                  setThreadState(thread, ThreadState_Inactive);
+              }
+          }
 	}
-
         break;
     }
-    }
+  }
 }
 
 void
@@ -185,38 +184,38 @@ receiveIPC(tcb_t *thread, cap_t cap, bool_t isBlocking)
 	    int reqStatus = isRWFMRequired(sender, thread);
 	    //kprintf("Status: %d \n", reqStatus);
 	    int flag = SUCCESS;
-	    if (reqStatus == SUCCESS) {
-	      /* check whether write is allowed for sender or not. */
-	      endpoint_t *srcEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&sender->tcbState);
-	      flag = checkRWFMWrite(sender->tcbName, srcEpptr);
-	      /* check whether read allowed for receiver or not.*/
-	      flag = flag | checkRWFMRead(thread->tcbName, epptr);
-	    }
-
-	    if (flag == SUCCESS) {
-            /* Dequeue the first TCB */
-            queue = tcbEPDequeue(sender, queue);
-            ep_ptr_set_queue(epptr, queue);
-
-            if (!queue.head) {
-                endpoint_ptr_set_state(epptr, EPState_Idle);
+            if (reqStatus == SUCCESS) {
+              /* check whether write is allowed for sender or not. */
+              endpoint_t *srcEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&sender->tcbState);
+              flag = checkRWFMWrite(sender->tcbName, srcEpptr);
+              /* check whether read allowed for receiver or not.*/
+              flag = flag | checkRWFMRead(thread->tcbName, epptr);
             }
 
-            /* Get sender IPC details */
-            badge = thread_state_ptr_get_blockingIPCBadge(&sender->tcbState);
-            canGrant =
-                thread_state_ptr_get_blockingIPCCanGrant(&sender->tcbState);
+            if (flag == SUCCESS) {
+              /* Dequeue the first TCB */
+              queue = tcbEPDequeue(sender, queue);
+              ep_ptr_set_queue(epptr, queue);
 
-            /* Do the transfer */
-            doIPCTransfer(sender, epptr, badge,
-                          canGrant, thread);
+              if (!queue.head) {
+                  endpoint_ptr_set_state(epptr, EPState_Idle);
+              }
 
-	    if (reqStatus == SUCCESS)  rwfmUpdateLabels(thread->tcbName, epptr);
+              /* Get sender IPC details */
+              badge = thread_state_ptr_get_blockingIPCBadge(&sender->tcbState);
+              canGrant =
+                  thread_state_ptr_get_blockingIPCCanGrant(&sender->tcbState);
 
-            do_call = thread_state_ptr_get_blockingIPCIsCall(&sender->tcbState);
+              /* Do the transfer */
+              doIPCTransfer(sender, epptr, badge,
+                            canGrant, thread);
 
-            if (do_call ||
-                    seL4_Fault_get_seL4_FaultType(sender->tcbFault) != seL4_Fault_NullFault) {
+              if (reqStatus == SUCCESS)  rwfmUpdateLabels(thread->tcbName, epptr);
+
+              do_call = thread_state_ptr_get_blockingIPCIsCall(&sender->tcbState);
+
+              if (do_call ||
+                      seL4_Fault_get_seL4_FaultType(sender->tcbFault) != seL4_Fault_NullFault) {
                 if (canGrant) {
                     setupCallerCap(sender, thread);
                 } else {
@@ -225,11 +224,11 @@ receiveIPC(tcb_t *thread, cap_t cap, bool_t isBlocking)
             } else {
                 setThreadState(sender, ThreadState_Running);
                 possibleSwitchTo(sender);
-            }
+              }
 	    }
 
             break;
-        }
+          }
         }
     }
 }
