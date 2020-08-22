@@ -78,6 +78,14 @@ LIBSEL4_INLINE_FUNC void
 rwfm_RegisterThread(seL4_Word thrNo, char* thrName, seL4_Word compNo, char* compName);
 
 /**
+ * @xmlonly <manual name="rwfm_CheckInfoFlowState" label="rwfm_CheckInfoFlowState"/> @endxmlonly
+ * @brief Return the status whether RWFM stopped the data flow or not for the last data flow that happened.
+ * Only use it after you have sent some data.
+ */
+LIBSEL4_INLINE_FUNC seL4_Word
+rwfm_CheckDataFlowStatus();
+
+/**
  * @xmlonly <manual name="Send" label="sel4_send"/> @endxmlonly
  * @brief Send to a capability
  *

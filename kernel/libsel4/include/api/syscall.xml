@@ -27,6 +27,7 @@
 	    <syscall name="rwfm_RegisterInterface" />
 	    <syscall name="rwfm_RegisterEndpoint" />
 	    <syscall name="rwfm_RegisterThread"/>
+	    <syscall name="rwfm_CheckDataFlowStatus"/>
         </config>
     </api>
     <!-- Syscalls on the unknown syscall path. These definitions will be wrapped in #if condition -->

@@ -504,6 +504,9 @@ handleSyscall(syscall_t syscall)
     case Sysrwfm_RegisterThread:
 	handleRWFMThreadReg();
 	break;
+    case Sysrwfm_CheckDataFlowStatus:
+	handleCheckDataFlowStatus();
+	break;
 
     default:
         fail("Invalid syscall");

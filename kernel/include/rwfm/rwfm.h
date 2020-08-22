@@ -11,6 +11,7 @@ epMapping epMap[10];
 int currep=0;
 thrMapping thrMap[10];
 int currthr=0;
+seL4_Word dataFlowStatus;
 
 int strCmp(char* , char* );
 void handleRWFMSubReg(void);
@@ -25,6 +26,7 @@ int checkRWFMRead(char *, endpoint_t *);
 void rwfmUpdateLabels(char *, endpoint_t *);
 int getIntNo(char *, endpoint_t *);
 int isRWFMRequired(tcb_t *, tcb_t *);
+void handleCheckDataFlowStatus(void);
 
 int strCmp(char* s1, char* s2)
 {
@@ -207,7 +209,9 @@ int checkRWFMWrite(char *sender, endpoint_t* intEpptr)
   }
   kprintf("Checking for write rule from subject: %d to object: %d\n", subIdNo, objIntNo);
   //kprintf("%d %ld %ld %ld %ld\n", subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
-  return do_write(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
+	//dataFlowStatus is SUCCESS if the data flow is allowed otherwise FAILURE.
+  dataFlowStatus = do_write(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
+	return dataFlowStatus;
 }
 
 int checkRWFMRead(char *receiver, endpoint_t* destEpptr)
@@ -331,4 +335,9 @@ int isRWFMRequired(tcb_t* sender, tcb_t* receiver)
   if (getRegister(sender, msgRegisters[0]) == 0) //If the message is just 0.
     return FAILURE;
   return SUCCESS;
+}
+
+void handleCheckDataFlowStatus(void)
+{
+	setRegister(ksCurThread, msgRegisters[0], dataFlowStatus);
 }
