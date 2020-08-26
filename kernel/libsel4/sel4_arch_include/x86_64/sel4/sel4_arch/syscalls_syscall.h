@@ -86,17 +86,20 @@ x64_sys_rwfm_RegisterThread(seL4_Word sys, seL4_Word thrNo, char* thrName, seL4_
 }
 
 static inline void
-x64_sys_rwfm_CheckDataFlowStatus(seL4_Word sys, seL4_Word *status)
+x64_sys_rwfm_CheckDataFlowStatus(seL4_Word sys, seL4_Word msg0, seL4_Word msg1, seL4_Word *status)
 {
     /*Todo: Add similar function in syscalls_sysenter.h file also, to be workable in 32-bit systems.*/
-    register seL4_Word mr0 asm("r10");
+    register seL4_Word mr0 asm("r10") = msg0;
+    register seL4_Word mr1 asm("r8") = msg1;
 
     asm volatile (
         "movq   %%rsp, %%rbx    \n"
         "syscall                \n"
         "movq   %%rbx, %%rsp    \n"
         : "=r" (mr0)
-        : "d" (sys)
+        : "d" (sys),
+	"r" (mr0),
+	"r" (mr1)
         : "%rcx", "%rbx", "r11"
     );
     *status = mr0;

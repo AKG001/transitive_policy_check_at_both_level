@@ -82,7 +82,7 @@ sendIPC(bool_t blocking, bool_t do_call, word_t badge,
         /* Check with RFWM if the transfer is allowed or not. */
         int reqStatus = isRWFMRequired(thread, dest);
         //kprintf("Status: %d \n", reqStatus);
-        //endpoint_t *destEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&dest->tcbState);
+        endpoint_t *destEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&dest->tcbState);
         //kprintf("Before: %s %d %s %d\n", thread->tcbName,
         //		getIntNo(thread->tcbName, epptr), dest->tcbName, getIntNo(dest->tcbName, destEpptr));
         int flag = SUCCESS;
@@ -90,7 +90,7 @@ sendIPC(bool_t blocking, bool_t do_call, word_t badge,
           /* check whether write is allowed for sender or not. */
           flag = checkRWFMWrite(thread->tcbName, epptr);
           /* check whether read is allowed for receiver or not. */
-          //flag = flag | checkRWFMRead(dest->tcbName, destEpptr);
+          flag = flag | checkRWFMRead(dest->tcbName, destEpptr);
         }
 
         if (flag == SUCCESS) {
@@ -186,8 +186,8 @@ receiveIPC(tcb_t *thread, cap_t cap, bool_t isBlocking)
 	    int flag = SUCCESS;
             if (reqStatus == SUCCESS) {
               /* check whether write is allowed for sender or not. */
-              //endpoint_t *srcEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&sender->tcbState);
-              //flag = checkRWFMWrite(sender->tcbName, srcEpptr);
+              endpoint_t *srcEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&sender->tcbState);
+              flag = checkRWFMWrite(sender->tcbName, srcEpptr);
               /* check whether read allowed for receiver or not.*/
               flag = flag | checkRWFMRead(thread->tcbName, epptr);
             }

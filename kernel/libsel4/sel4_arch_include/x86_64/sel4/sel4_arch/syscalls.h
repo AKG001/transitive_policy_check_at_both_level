@@ -48,10 +48,10 @@ rwfm_RegisterThread(seL4_Word thrNo, char* thrName, seL4_Word compNo, char* comp
 }
 
 LIBSEL4_INLINE_FUNC seL4_Word
-rwfm_CheckDataFlowStatus()
+rwfm_CheckDataFlowStatus(seL4_Word compNo, seL4_Word epNo)
 {
     seL4_Word status;
-    x64_sys_rwfm_CheckDataFlowStatus(seL4_Sysrwfm_CheckDataFlowStatus, &status);
+    x64_sys_rwfm_CheckDataFlowStatus(seL4_Sysrwfm_CheckDataFlowStatus, compNo, epNo, &status);
 		return status;
 }
 

@@ -262,6 +262,8 @@ int /*? me.interface.name ?*/__run(void) {
     /*- if options.frpc_lock_elision and 1 + len(me.instance.type.provides) + len(me.instance.type.consumes) > 1 -*/
       camkes_protect_reply_cap();
     /*- endif -*/
+    int status = rwfm_CheckDataFlowStatus(compNo, /*? ep ?*/);
+    if (status == 0/*SUCCESS*/)
     /*? info ?*/ = seL4_Recv(/*? ep ?*/, NULL);
 
     _TIMESTAMP("communication done");
@@ -275,6 +277,7 @@ int /*? me.interface.name ?*/__run(void) {
 
     _TIMESTAMP("lock released");
 
+    if(status == 0/*SUCCESS*/) {
     /* Unmarshal the response */
     /*- set size = c_symbol('size') -*/
     unsigned /*? size ?*/ = seL4_MessageInfo_get_length(/*? info ?*/) * sizeof(seL4_Word);
@@ -302,6 +305,7 @@ int /*? me.interface.name ?*/__run(void) {
     /*- if m.return_type is not none -*/
         return * /*? ret_ptr ?*/;
     /*- endif -*/
+    }
 }
 #undef _TIMESTAMP
 /*- endfor -*/
