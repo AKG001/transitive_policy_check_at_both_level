@@ -1045,15 +1045,28 @@ int USED main(int argc UNUSED, char *argv[]) {
     assert(argc == 2);
     assert(strcmp(argv[0], "camkes") == 0);
 
+    //RWFM: BOUND STARTS
+    int compNo, owner, reader, writer, intNo;
     /*- for sub in rwfm_subjects.values(): -*/
       /*- if me.instance.name == sub[0]: -*/
-        int compNo = /*? sub[1] ?*/;
-	int owner = /*? rwfm.subjects[sub[1]].owner ?*/;
-	int reader = /*? rwfm.subjects[sub[1]].readers ?*/;
-	int writer = /*? rwfm.subjects[sub[1]].writers ?*/;
+        compNo = /*? sub[1] ?*/;
+	owner = /*? rwfm.subjects[sub[1]].owner ?*/;
+	reader = /*? rwfm.subjects[sub[1]].readers ?*/;
+	writer = /*? rwfm.subjects[sub[1]].writers ?*/;
       /*- endif -*/
     /*- endfor -*/
     rwfm_RegisterSubject("/*? me.instance.name ?*/", compNo, owner, reader, writer);
+    //Register all the possible interfaces on a component.
+    /*- for obj in rwfm_objects.values(): -*/
+      /*- if me.instance.name == obj[3]: -*/
+        intNo = /*? obj[1] ?*/;
+        owner = /*? rwfm.objects[obj[1]].owner ?*/;
+        reader = /*? rwfm.objects[obj[1]].readers ?*/;
+        writer = /*? rwfm.objects[obj[1]].writers ?*/;
+	rwfm_RegisterInterface("/*? me.instance.name ?*/:/*? obj[0] ?*/", intNo, owner, reader, writer);
+      /*- endif -*/
+    /*- endfor -*/
+    //RWFM: BOUND ENDS
 
     int thread_id = (int)(uintptr_t)(argv[1]);
     return post_main(thread_id);
