@@ -109,6 +109,7 @@ void handleRWFMEpReg(void)
 {
     //Register the endpoints created corresponding to each interface for a camkes component.
     char *mssg = (char*)(lookupIPCBuffer(true, NODE_STATE(ksCurThread)) + 1);
+		//kprintf("Ep string: %s %d\n", mssg, currep);
     int left = 0;
 
     epMap[currep].epNo    = uGetNumber(mssg, &left, '~');
@@ -119,12 +120,11 @@ void handleRWFMEpReg(void)
     epMap[currep].epptr = NULL;
     ++currep;
 
-    #ifdef prints
+
     int i = currep-1;
     kprintf("Ep id: %d, CompNo: %d, CompName: %s, IntNo: %d, IntName: %s, Epptr: %p\n",
 										epMap[i].epNo, epMap[i].compNo, epMap[i].compName, epMap[i].intNo,
 										epMap[i].intName, (void *)epMap[i].epptr);
-    #endif
     mssg = '\0';
 }
 
@@ -153,6 +153,7 @@ void registerEpptrPerEp(endpoint_t* epptr, cptr_t ep)
   char thrName[20];
   int left = 0;
   uGetString(thrName, ksCurThread->tcbName, &left, ':');
+	//kprintf("Thr: %s, Ind: %ld %p\n", thrName, ep, epptr);
   for(int i=0;i<currep;i++)
   {
     if ((!strCmp(thrName, epMap[i].compName)) && ep == epMap[i].epNo && epMap[i].epptr==NULL)
@@ -208,7 +209,7 @@ int checkRWFMWrite(char *sender, endpoint_t* intEpptr)
     if (objIntNo == o[oNo].obj_id_index)	break;
   }
   kprintf("Checking for write rule from subject: %d to object: %d\n", subIdNo, objIntNo);
-  //kprintf("%d %ld %ld %ld %ld\n", subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
+  //kprintf("%d %ld %ld %ld %ld\n", subIdNo, s[sNo].readers, s[sNo].writers, o[oNo].readers, o[oNo].writers);
 	//dataFlowStatus is SUCCESS for a client on an endpoint if the data flow is allowed otherwise FAILURE.
   dataFlowStatus[subIdNo][epNo] = do_write(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
 	return dataFlowStatus[subIdNo][epNo];

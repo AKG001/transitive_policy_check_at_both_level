@@ -208,6 +208,23 @@ int
     /*? me.interface.name ?*/__run(void)
 /*- endif -*/
 {
+    //Registering Endpoint for RWFM: BOUND STARTS
+        /*- for sub in rwfm_subjects.values(): -*/
+          /*- if me.instance.name == sub[0]: -*/
+            int compNo = /*? sub[1] ?*/;
+          /*- endif -*/
+        /*- endfor -*/
+        /*- for obj in rwfm_objects.values(): -*/
+          /*- if me.interface.name == obj[0] and me.instance.name == obj[3]: -*/
+            int intNo = /*? obj[1] ?*/;
+            int owner = /*? rwfm.objects[obj[1]].owner ?*/;
+            int reader = /*? rwfm.objects[obj[1]].readers ?*/;
+            int writer = /*? rwfm.objects[obj[1]].writers ?*/;
+          /*- endif -*/
+        /*- endfor -*/
+        rwfm_RegisterEndpoint(/*? ep ?*/, compNo, "/*? me.instance.name ?*/", intNo, "/*? me.interface.name ?*/");
+    //RWFM: BOUND ENDS
+
 
     /*# Check any typedefs we have been given are not arrays. #*/
     /*- include 'call-array-typedef-check.c' -*/
