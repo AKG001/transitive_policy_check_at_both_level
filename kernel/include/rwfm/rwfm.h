@@ -78,8 +78,8 @@ void handleRWFMSubReg(void)
     
     #ifdef prints
     int i = currsub-1;
-    kprintf("Thread: %s sub id: %d owner: %d readers: %ld writers: %ld\n",
-		   s[i].compName, s[i].sub_id_index, s[i].owner, s[i].readers, s[i].writers);
+    kprintf("{%s}: Thread: %s sub id: %d owner: %d readers: %ld writers: %ld\n",
+		   __func__, s[i].compName, s[i].sub_id_index, s[i].owner, s[i].readers, s[i].writers);
     #endif
     mssg = '\0';
 }
@@ -99,8 +99,8 @@ void handleRWFMIntReg(void)
 
     #ifdef prints
     int i = currobj-1;
-    kprintf("Interface: %s, obj id: %d owner: %d readers: %ld writers: %ld\n",
-		    o[i].objName, o[i].obj_id_index, o[i].owner, o[i].readers, o[i].writers);
+    kprintf("{%s}: Interface: %s, obj id: %d owner: %d readers: %ld writers: %ld\n",
+		    __func__, o[i].objName, o[i].obj_id_index, o[i].owner, o[i].readers, o[i].writers);
     #endif
     mssg = '\0';
 }
@@ -109,7 +109,7 @@ void handleRWFMEpReg(void)
 {
     //Register the endpoints created corresponding to each interface for a camkes component.
     char *mssg = (char*)(lookupIPCBuffer(true, NODE_STATE(ksCurThread)) + 1);
-		//kprintf("Ep string: %s %d\n", mssg, currep);
+		//kprintf("{%s}: Ep string: %s %d\n", __func__, mssg, currep);
     int left = 0;
 
     epMap[currep].epNo    = uGetNumber(mssg, &left, '~');
@@ -122,8 +122,8 @@ void handleRWFMEpReg(void)
 
 
     int i = currep-1;
-    kprintf("Ep id: %d, CompNo: %d, CompName: %s, IntNo: %d, IntName: %s, Epptr: %p\n",
-										epMap[i].epNo, epMap[i].compNo, epMap[i].compName, epMap[i].intNo,
+    kprintf("{%s}: Ep id: %d, CompNo: %d, CompName: %s, IntNo: %d, IntName: %s, Epptr: %p\n",
+										__func__, epMap[i].epNo, epMap[i].compNo, epMap[i].compName, epMap[i].intNo,
 										epMap[i].intName, (void *)epMap[i].epptr);
     mssg = '\0';
 }
@@ -142,8 +142,8 @@ void handleRWFMThreadReg(void)
 
     #ifdef prints
     int i = currthr-1;
-    kprintf("ThrNo: %d, ThrName: %s, CompNo: %d, CompName: %s\n",
-		    thrMap[i].thrNo, thrMap[currthr].thrName, thrMap[i].compNo, thrMap[currthr].compName);
+    kprintf("{%s}: ThrNo: %d, ThrName: %s, CompNo: %d, CompName: %s\n",
+		    __func__, thrMap[i].thrNo, thrMap[currthr].thrName, thrMap[i].compNo, thrMap[currthr].compName);
     #endif
     mssg = '\0';
 }
@@ -153,16 +153,16 @@ void registerEpptrPerEp(endpoint_t* epptr, cptr_t ep)
   char thrName[20];
   int left = 0;
   uGetString(thrName, ksCurThread->tcbName, &left, ':');
-	//kprintf("Thr: %s, Ind: %ld %p\n", thrName, ep, epptr);
+	//kprintf("{%s}: Thr: %s, Ind: %ld %p\n", __func__, thrName, ep, epptr);
   for(int i=0;i<currep;i++)
   {
     if ((!strCmp(thrName, epMap[i].compName)) && ep == epMap[i].epNo && epMap[i].epptr==NULL)
     {
       epMap[i].epptr = epptr;
-			kprintf("Ep id: %d, CompNo: %d, CompName: %s, IntNo: %d, IntName: %s, Epptr: %p\n",
-											epMap[i].epNo, epMap[i].compNo, epMap[i].compName, epMap[i].intNo,
+			kprintf("{%s}: Ep id: %d, CompNo: %d, CompName: %s, IntNo: %d, IntName: %s, Epptr: %p\n",
+											__func__, epMap[i].epNo, epMap[i].compNo, epMap[i].compName, epMap[i].intNo,
 											epMap[i].intName, (void *)epMap[i].epptr);
-      //kprintf("The EP for %s is registered.\n", thrName);
+      kprintf("{%s}: The EP for %s is registered.\n", __func__, thrName);
       break;
     }
   }
@@ -181,7 +181,7 @@ int checkRWFMWrite(char *sender, endpoint_t* intEpptr)
   {
     if ((!strCmp(subName, epMap[i].compName)) && intEpptr == epMap[i].epptr)
     {
-      //kprintf("Send interface number %d.", epMap[i].intNo);
+      //kprintf("{%s}: Send interface number %d.", __func__, epMap[i].intNo);
       objIntNo = epMap[i].intNo;
       subIdNo = epMap[i].compNo;
 			epNo = epMap[i].epNo;
@@ -191,12 +191,12 @@ int checkRWFMWrite(char *sender, endpoint_t* intEpptr)
 
 	if (objIntNo == -1)
   {
-    //kprintf("The endpoint for thread %s is not registered with RWFM.\n", ksCurThread->tcbName);
+    //kprintf("{%s} The endpoint for thread %s is not registered with RWFM.\n", __func__, ksCurThread->tcbName);
     return SUCCESS;
   }
   if (subIdNo == -1)
   {
-    //kprintf("The thread %s is not registered with RWFM.\n", ksCurThread->tcbName);
+    //kprintf("{%s}: The thread %s is not registered with RWFM.\n", __func__, ksCurThread->tcbName);
     return SUCCESS;
   }
 
@@ -208,8 +208,8 @@ int checkRWFMWrite(char *sender, endpoint_t* intEpptr)
   {
     if (objIntNo == o[oNo].obj_id_index)	break;
   }
-  kprintf("Checking for write rule from subject: %d to object: %d\n", subIdNo, objIntNo);
-  //kprintf("%d %ld %ld %ld %ld\n", subIdNo, s[sNo].readers, s[sNo].writers, o[oNo].readers, o[oNo].writers);
+  kprintf("{%s}: Checking for write rule from subject: %d to object: %d\n", __func__, subIdNo, objIntNo);
+  //kprintf("{%s}: %d %ld %ld %ld %ld\n", __func__, subIdNo, s[sNo].readers, s[sNo].writers, o[oNo].readers, o[oNo].writers);
 	//dataFlowStatus is SUCCESS for a client on an endpoint if the data flow is allowed otherwise FAILURE.
   dataFlowStatus[subIdNo][epNo] = do_write(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
 	return dataFlowStatus[subIdNo][epNo];
@@ -228,7 +228,7 @@ int checkRWFMRead(char *receiver, endpoint_t* destEpptr)
   {
     if ((!strCmp(subName, epMap[i].compName)) && destEpptr == epMap[i].epptr)
     {
-      //kprintf("Receive interface number %d.", epMap[i].intNo);
+      //kprintf("{%s}: Receive interface number %d.", __func__, epMap[i].intNo);
       objIntNo = epMap[i].intNo;
       subIdNo = epMap[i].compNo;
       break;
@@ -237,12 +237,12 @@ int checkRWFMRead(char *receiver, endpoint_t* destEpptr)
 
   if (objIntNo == -1)
   {
-    //kprintf("The endpoint for thread %s is not registered with RWFM.\n", ksCurThread->tcbName);
+    //kprintf("{%s}: The endpoint for thread %s is not registered with RWFM.\n", __func__, ksCurThread->tcbName);
     return SUCCESS;
   }
   if (subIdNo == -1)
   {
-    //kprintf("The thread %s is not registered with RWFM.\n", ksCurThread->tcbName);
+    //kprintf("{%s}: The thread %s is not registered with RWFM.\n", __func__, ksCurThread->tcbName);
     return SUCCESS;
   }
 
@@ -255,8 +255,8 @@ int checkRWFMRead(char *receiver, endpoint_t* destEpptr)
   {
     if (o[oNo].obj_id_index == objIntNo)	break;
   }
-  kprintf("Checking from read rule from object: %d to subject: %d\n", objIntNo, subIdNo);
-  //kprintf("%d %ld %ld %ld %ld\n", subIdNo, s[sNo].readers, s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
+  kprintf("{%s}: Checking from read rule from object: %d to subject: %d\n", __func__, objIntNo, subIdNo);
+  //kprintf("{%s}: %d %ld %ld %ld %ld\n", __func__, subIdNo, s[sNo].readers, s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
   return do_read(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
 }
 
@@ -273,7 +273,7 @@ void rwfmUpdateLabels(char* receiver, endpoint_t* epptr)
   {
     if ((!strCmp(subName, epMap[i].compName)) && epptr == epMap[i].epptr)
     {
-      //kprintf("Send interface number %d.", epMap[i].intNo);
+      //kprintf("{%s}: Send interface number %d.", __func__, epMap[i].intNo);
       objIntNo = epMap[i].intNo;
       subIdNo = epMap[i].compNo;
       break;
@@ -281,12 +281,12 @@ void rwfmUpdateLabels(char* receiver, endpoint_t* epptr)
   }
   if (objIntNo == -1)
   {
-    //kprintf("The endpoint for thread %s is not registered with RWFM.\n", ksCurThread->tcbName);
+    //kprintf("{%s}: The endpoint for thread %s is not registered with RWFM.\n", __func__, ksCurThread->tcbName);
     return ;
   }
 	if (subIdNo == -1)
   {
-    //kprintf("The thread %s is not registered with RWFM.\n", ksCurThread->tcbName);
+    //kprintf("{%s}: The thread %s is not registered with RWFM.\n", __func__, ksCurThread->tcbName);
     return ;
   }
   for(sNo=0;sNo<currsub;sNo++)
@@ -298,7 +298,7 @@ void rwfmUpdateLabels(char* receiver, endpoint_t* epptr)
   {
     if (o[oNo].obj_id_index == objIntNo)	break;
   }
-  kprintf("For object: %d to subject %d\n", objIntNo, subIdNo);
+  kprintf("{%s}: For object: %d to subject %d\n", __func__, objIntNo, subIdNo);
   update_labels(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
 }
 
@@ -311,7 +311,7 @@ int getIntNo(char *name, endpoint_t *epptr)
   {
     if ((!strCmp(subName, epMap[i].compName)) && epptr == epMap[i].epptr)
     {
-      //kprintf("Interface number %d.", epMap[i].intNo);
+      //kprintf("{%s}: Interface number %d.", __func__, epMap[i].intNo);
       return epMap[i].intNo;
     }
   }
@@ -332,7 +332,7 @@ int isRWFMRequired(tcb_t* sender, tcb_t* receiver)
   if (seL4_MessageInfo_get_length(tag) == 0) return FAILURE;
 
   if (!strCmp(senderName, receiverName)) return FAILURE;
-  //kprintf("Mssg got: %ld %ld\n", getRegister(sender, msgRegisters[0]), getRegister(receiver, msgRegisters[0]));
+  //kprintf("{%s}: Mssg got: %ld %ld\n", __func__, getRegister(sender, msgRegisters[0]), getRegister(receiver, msgRegisters[0]));
   if (getRegister(sender, msgRegisters[0]) == 0) //If the message is just 0.
     return FAILURE;
   return SUCCESS;

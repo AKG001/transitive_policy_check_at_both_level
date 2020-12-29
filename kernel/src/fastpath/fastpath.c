@@ -137,6 +137,9 @@ fastpath_call(word_t cptr, word_t msgInfo)
     }
 #endif /* ENABLE_SMP_SUPPORT */
 
+    registerEpptrPerEp(ep_ptr, cptr);
+    if ((checkRWFMWrite(ksCurThread->tcbName, ep_ptr) ||
+	    checkRWFMRead(dest->tcbName, ep_ptr)) == SUCCESS) {
     /*
      * --- POINT OF NO RETURN ---
      *
@@ -183,6 +186,12 @@ fastpath_call(word_t cptr, word_t msgInfo)
     msgInfo = wordFromMessageInfo(seL4_MessageInfo_set_capsUnwrapped(info, 0));
 
     fastpath_restore(badge, msgInfo, NODE_STATE(ksCurThread));
+
+    rwfmUpdateLabels(dest->tcbName, ep_ptr);
+    }
+    else {
+	fastpath_restore(0, msgInfo, NODE_STATE(ksCurThread));
+    }
 }
 
 void

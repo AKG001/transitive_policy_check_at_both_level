@@ -330,7 +330,9 @@ int /*? me.interface.name ?*/__run(void) {
         /*- endif -*/
         );
     /*? info ?*/ = seL4_Call(/*? ep ?*/, /*? info ?*/);
-
+    int status = rwfm_CheckDataFlowStatus(compNo, /*? ep ?*/);
+    if (status == 0/*SUCCESS*/)
+    {
     /*- set size = c_symbol('size') -*/
     unsigned /*? size ?*/ =
     /*- if userspace_ipc -*/
@@ -358,7 +360,7 @@ int /*? me.interface.name ?*/__run(void) {
             return;
         /*- endif -*/
     }
-
+    }
     /*- if userspace_buffer_ep is not none -*/
       sync_sem_bare_post(/*? userspace_buffer_ep ?*/,
         &/*? userspace_buffer_sem_value ?*/);
