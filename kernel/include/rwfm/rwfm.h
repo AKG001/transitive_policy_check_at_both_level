@@ -26,6 +26,7 @@ void rwfmUpdateLabels(char *, endpoint_t *);
 int getIntNo(char *, endpoint_t *);
 int isRWFMRequired(tcb_t *, tcb_t *);
 void handleCheckDataFlowStatus(void);
+bool_t alreadyRegisteredEp(int epNo, int compNo, int intNo);
 
 int strCmp(char* s1, char* s2)
 {
@@ -105,17 +106,36 @@ void handleRWFMIntReg(void)
     mssg = '\0';
 }
 
+bool_t alreadyRegisteredEp(int epNo, int compNo, int intNo) {
+	for (int i = 0; i < currep; i++) {
+		if (epMap[i].epNo == epNo && epMap[i].compNo == compNo && epMap[i].intNo == intNo)
+			return true;
+	}
+	return false;
+}
+
 void handleRWFMEpReg(void)
 {
     //Register the endpoints created corresponding to each interface for a camkes component.
     char *mssg = (char*)(lookupIPCBuffer(true, NODE_STATE(ksCurThread)) + 1);
 		//kprintf("{%s}: Ep string: %s %d\n", __func__, mssg, currep);
     int left = 0;
+		char compName[20];
+		int epNo = uGetNumber(mssg, &left, '~');
+		int compNo = uGetNumber(mssg, &left, '~');
 
-    epMap[currep].epNo    = uGetNumber(mssg, &left, '~');
-    epMap[currep].compNo  = uGetNumber(mssg, &left, '~');
-    uGetString(epMap[currep].compName, mssg, &left, '~');
-    epMap[currep].intNo   = uGetNumber(mssg, &left, '~');
+		uGetString(compName, mssg, &left, '~');
+		int intNo = uGetNumber(mssg, &left, '~');
+
+		if (alreadyRegisteredEp(epNo, compNo, intNo)) {
+			kprintf("{%s} Already registered Endpoint number\n", __func__);
+			mssg = '\0';
+			return ;
+		}
+		epMap[currep].epNo = epNo;
+		epMap[currep].compNo = compNo;
+		strlcpy(epMap[currep].compName, compName, 20);
+		epMap[currep].intNo = intNo;
     uGetString(epMap[currep].intName, mssg, &left, '~');
     epMap[currep].epptr = NULL;
     ++currep;
