@@ -6,10 +6,11 @@
 #define no 10
 
 int currsub = 0, currobj = 0, currep = 0, currthr = 0;
-SUBJECT s[10];
-OBJECT o[10];
-epMapping epMap[10];
-thrMapping thrMap[10];
+SUBJECT s[ns];
+OBJECT o[no];
+epMapping epMap[ns];
+thrMapping thrMap[ns];
+bool_t locks[ns+1] = {false};
 int dataFlowStatus[ns][no];
 
 int strCmp(char* , char* );
@@ -27,6 +28,50 @@ int getIntNo(char *, endpoint_t *);
 int isRWFMRequired(tcb_t *, tcb_t *);
 void handleCheckDataFlowStatus(void);
 bool_t alreadyRegisteredEp(int epNo, int compNo, int intNo);
+void acquire_lock(char *);
+void release_lock(char *);
+
+void acquire_lock(char* subject) {
+	char subName[20];
+  int left = 0;
+  uGetString(subName, subject, &left, ':');
+
+	int i;
+	for(i=0;i<currsub;i++)
+	{
+		if (!strCmp(subName, s[i].compName))
+    {
+      //kprintf("{%s}: Subject number %d\n.", __func__, s[i].sub_id_index);
+			break;
+		}
+	}
+	if (i == currsub) return ;
+
+	kprintf("{%s}: Attempt to acquire lock number %d {%s}\n", __func__, s[i].sub_id_index, subject);
+	while(__sync_bool_compare_and_swap(&locks[s[i].sub_id_index], false, true) == false);
+	kprintf("{%s}: Attempt successful to acquire lock number %d\n", __func__, s[i].sub_id_index);
+}
+
+void release_lock(char* subject) {
+	char subName[20];
+  int left = 0;
+  uGetString(subName, subject, &left, ':');
+			
+	int i;
+	for(i=0;i<currsub;i++)
+	{
+		if (!strCmp(subName, s[i].compName))
+    {
+      //kprintf("{%s}: Subject number %d.", __func__, s[i].sub_id_index);
+			break;
+		}
+	}
+
+	if (i == currsub) return ;
+
+	kprintf("{%s}: Lock number %d released\n", __func__, s[i].sub_id_index);
+	locks[s[i].sub_id_index] = false;
+}
 
 int strCmp(char* s1, char* s2)
 {
@@ -266,7 +311,7 @@ int checkRWFMRead(char *receiver, endpoint_t* destEpptr)
     return SUCCESS;
   }
 
-	for(sNo=0;sNo<currsub;sNo++)
+  for(sNo=0;sNo<currsub;sNo++)
   {
     if (s[sNo].sub_id_index == subIdNo)	break;
   }

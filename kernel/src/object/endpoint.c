@@ -40,6 +40,7 @@ void
 sendIPC(bool_t blocking, bool_t do_call, word_t badge,
         bool_t canGrant, tcb_t *thread, endpoint_t *epptr)
 {
+    acquire_lock(thread->tcbName);
     switch (endpoint_ptr_get_state(epptr)) {
     case EPState_Idle:
     case EPState_Send:
@@ -108,6 +109,9 @@ sendIPC(bool_t blocking, bool_t do_call, word_t badge,
           if (reqStatus == SUCCESS)  rwfmUpdateLabels(dest->tcbName,
                              (endpoint_t *)thread_state_ptr_get_blockingObject(&dest->tcbState));
 
+	  release_lock(thread->tcbName);
+	  release_lock(dest->tcbName);
+
           setThreadState(dest, ThreadState_Running);
           possibleSwitchTo(dest);
 
@@ -141,6 +145,7 @@ receiveIPC(tcb_t *thread, cap_t cap, bool_t isBlocking)
     if (ntfnPtr && notification_ptr_get_state(ntfnPtr) == NtfnState_Active) {
         completeSignal(ntfnPtr, thread);
     } else {
+	acquire_lock(thread->tcbName);
         switch (endpoint_ptr_get_state(epptr)) {
         case EPState_Idle:
         case EPState_Recv: {
@@ -213,6 +218,9 @@ receiveIPC(tcb_t *thread, cap_t cap, bool_t isBlocking)
               if (reqStatus == SUCCESS)  rwfmUpdateLabels(thread->tcbName, epptr);
 
               do_call = thread_state_ptr_get_blockingIPCIsCall(&sender->tcbState);
+
+	      release_lock(thread->tcbName);
+	      release_lock(sender->tcbName);
 
               if (do_call ||
                       seL4_Fault_get_seL4_FaultType(sender->tcbFault) != seL4_Fault_NullFault) {
