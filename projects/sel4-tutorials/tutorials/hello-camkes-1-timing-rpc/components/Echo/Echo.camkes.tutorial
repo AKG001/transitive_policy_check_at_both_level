@@ -1,0 +1,5 @@
+import "../../interfaces/HelloSimple.camkes";
+
+component Echo {
+    provides HelloSimple h3;
+}

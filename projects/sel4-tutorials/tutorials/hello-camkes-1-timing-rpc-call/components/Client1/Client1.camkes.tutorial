@@ -1,0 +1,6 @@
+import "../../interfaces/HelloSimple.camkes";
+
+component Client1 {
+    control;
+    uses HelloSimple h2;
+}

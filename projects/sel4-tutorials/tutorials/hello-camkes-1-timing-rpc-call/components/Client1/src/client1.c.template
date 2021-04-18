@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <camkes.h>
+
+int run(void) {
+  int count = 0;
+  while(1)
+  {
+    char *shello = "hello world";
+    int recv = h2_make_call(shello);
+    count++;
+    printf("%d\n", count);
+  }
+  return 0;
+}

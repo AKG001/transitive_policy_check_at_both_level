@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <camkes.h>
+
+int h3_say_hello(const char *str)
+{
+  printf("Component %s got: %s\n", get_instance_name(), str);
+  printf("Return value from Client2: %d \n",h5_say_hello(str));
+  return 1233;
+}

@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include <camkes.h>
+
+int run(void) {
+    printf("Starting the client1\n");
+    printf("-------------------\n");
+
+    printf("Component name %s\n", get_instance_name());
+
+    char *shello = "hello world";
+
+    printf("Client1 got return value from Echo: %d.\n", h2_say_hello(shello));
+
+    printf("Client1 done.\n");
+    return 0;
+}

@@ -1,0 +1,3 @@
+procedure HelloSimple {
+    void make_call(in string str);
+};
