@@ -1,7 +1,7 @@
 #include <kernel/thread.h>
 #include <rwfm/rwfmmodel.c>
 
-//#define prints 0
+//#define prints
 #define ns 10
 #define no 10
 
@@ -128,7 +128,9 @@ void handleRWFMEpReg(void)
 		int intNo = uGetNumber(mssg, &left, '~');
 
 		if (alreadyRegisteredEp(epNo, compNo, intNo)) {
-			kprintf("{%s} Already registered Endpoint number\n", __func__);
+			#ifdef prints
+      kprintf("{%s} Already registered Endpoint number\n", __func__);
+      #endif
 			mssg = '\0';
 			return ;
 		}
@@ -140,11 +142,12 @@ void handleRWFMEpReg(void)
     epMap[currep].epptr = NULL;
     ++currep;
 
-
+    #ifdef prints
     int i = currep-1;
     kprintf("{%s}: Ep id: %d, CompNo: %d, CompName: %s, IntNo: %d, IntName: %s, Epptr: %p\n",
 										__func__, epMap[i].epNo, epMap[i].compNo, epMap[i].compName, epMap[i].intNo,
 										epMap[i].intName, (void *)epMap[i].epptr);
+    #endif
     mssg = '\0';
 }
 
@@ -179,10 +182,12 @@ void registerEpptrPerEp(endpoint_t* epptr, cptr_t ep)
     if ((!strCmp(thrName, epMap[i].compName)) && ep == epMap[i].epNo && epMap[i].epptr==NULL)
     {
       epMap[i].epptr = epptr;
+      #ifdef prints
 			kprintf("{%s}: Ep id: %d, CompNo: %d, CompName: %s, IntNo: %d, IntName: %s, Epptr: %p\n",
 											__func__, epMap[i].epNo, epMap[i].compNo, epMap[i].compName, epMap[i].intNo,
 											epMap[i].intName, (void *)epMap[i].epptr);
       kprintf("{%s}: The EP for %s is registered.\n", __func__, thrName);
+      #endif
       break;
     }
   }
@@ -228,7 +233,9 @@ int checkRWFMWrite(char *sender, endpoint_t* intEpptr)
   {
     if (objIntNo == o[oNo].obj_id_index)	break;
   }
+  #ifdef prints
   kprintf("{%s}: Checking for write rule from subject: %d to object: %d\n", __func__, subIdNo, objIntNo);
+  #endif
   //kprintf("{%s}: %d %ld %ld %ld %ld\n", __func__, subIdNo, s[sNo].readers, s[sNo].writers, o[oNo].readers, o[oNo].writers);
 	//dataFlowStatus is SUCCESS for a client on an endpoint if the data flow is allowed otherwise FAILURE.
   dataFlowStatus[subIdNo][epNo] = do_write(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
@@ -275,7 +282,9 @@ int checkRWFMRead(char *receiver, endpoint_t* destEpptr)
   {
     if (o[oNo].obj_id_index == objIntNo)	break;
   }
+  #ifdef prints
   kprintf("{%s}: Checking from read rule from object: %d to subject: %d\n", __func__, objIntNo, subIdNo);
+  #endif
   //kprintf("{%s}: %d %ld %ld %ld %ld\n", __func__, subIdNo, s[sNo].readers, s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
   return do_read(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
 }
@@ -318,7 +327,9 @@ void rwfmUpdateLabels(char* receiver, endpoint_t* epptr)
   {
     if (o[oNo].obj_id_index == objIntNo)	break;
   }
+  #ifdef prints
   kprintf("{%s}: For object: %d to subject %d\n", __func__, objIntNo, subIdNo);
+  #endif
   update_labels(subIdNo, &s[sNo].readers, &s[sNo].writers, &o[oNo].readers, &o[oNo].writers);
 }
 
