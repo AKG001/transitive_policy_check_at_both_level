@@ -155,7 +155,7 @@ void update_labels(uint sub_id_index,USER_SET *subject_readers,USER_SET *subject
   printf("Updated Labels\n");
   printf("Subject: %d Readers:%ld  Writers:%ld\n",sub_id_index, *subject_readers,*subject_writers);
   printf("Object  Readers:%ld  Writers:%ld\n",*object_readers,*object_writers);
-  #ifdef prints
+  #endif
 }
 
 SUBJECT* get_sub_by_id(SUBJECT *sub_list,uint sub_id,int ns)
