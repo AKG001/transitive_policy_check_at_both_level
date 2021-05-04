@@ -1,0 +1,3 @@
+procedure SendPaper {
+    void send_paper(in string str);
+};

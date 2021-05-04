@@ -1,0 +1,6 @@
+import "../../interfaces/SendPaper.camkes";
+
+component Professor {
+    control;
+    uses SendPaper h2;
+}

@@ -1,0 +1,8 @@
+#include <stdio.h>
+#include <camkes.h>
+
+void h3_send_paper(const char *paper) {
+  printf("TA got the paper from Professor. The Paper has contents : %s\n", paper);
+  printf("TA is trying to send the paper to the Student\n");
+  h5_talktostudent(paper);
+}

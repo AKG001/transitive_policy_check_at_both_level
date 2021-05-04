@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <camkes.h>
+
+int run(void) {
+  printf("Professor Calls TA\n");
+  char *paper = "Exam Paper";
+  h2_send_paper(paper);
+  return 0;
+}

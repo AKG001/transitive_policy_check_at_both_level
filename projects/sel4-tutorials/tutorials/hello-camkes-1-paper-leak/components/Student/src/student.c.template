@@ -1,0 +1,6 @@
+#include <stdio.h>
+#include <camkes.h>
+
+void h6_talktostudent(const char *paper) {
+  printf("Student got the paper from Professor indirectly through TA. The paper contains: %s.\n", paper);
+}

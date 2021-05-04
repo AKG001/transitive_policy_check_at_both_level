@@ -1,0 +1,3 @@
+procedure TalktoStudent {
+    void talktostudent(in string str);
+};

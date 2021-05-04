@@ -1,0 +1,7 @@
+import "../../interfaces/SendPaper.camkes";
+import "../../interfaces/TalktoStudent.camkes";
+
+component TA {
+    provides SendPaper h3;
+    uses TalktoStudent h5;
+}

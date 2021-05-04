@@ -1,0 +1,5 @@
+import "../../interfaces/TalktoStudent.camkes";
+
+component Student {
+    provides TalktoStudent h6;
+}

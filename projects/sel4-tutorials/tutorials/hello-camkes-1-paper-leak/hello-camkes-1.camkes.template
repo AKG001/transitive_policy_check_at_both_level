@@ -1,0 +1,16 @@
+import <std_connector.camkes>;
+
+import "components/Professor/Professor.camkes";
+import "components/TA/TA.camkes";
+import "components/Student/Student.camkes";
+
+assembly {
+    composition {
+        component Professor professor;
+	    component TA ta;
+	    component Student student;
+
+        connection seL4RPC h1(from professor.h2, to ta.h3);
+        connection seL4RPC h4(from ta.h5, to student.h6);
+    }
+}
