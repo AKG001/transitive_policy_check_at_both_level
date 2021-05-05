@@ -1,0 +1,8 @@
+#include <stdio.h>
+#include <camkes.h>
+
+void h3_talktolead(const char *secret) {
+  printf("Team Lead got the confidential data from the Manager. The data has contents: %s\n", secret);
+  printf("Team Lead is trying to send the data to the Team Member\n");
+  h5_talktomember(secret);
+}

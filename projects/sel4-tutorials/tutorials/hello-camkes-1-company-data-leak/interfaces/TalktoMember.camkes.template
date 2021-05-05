@@ -1,0 +1,3 @@
+procedure TalktoMember {
+    void talktomember (in string str);
+};

@@ -1,0 +1,7 @@
+import "../../interfaces/TalktoLead.camkes";
+import "../../interfaces/TalktoMember.camkes";
+
+component Lead {
+    provides TalktoLead h3;
+    uses TalktoMember h5;
+}

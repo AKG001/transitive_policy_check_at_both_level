@@ -1,0 +1,16 @@
+import <std_connector.camkes>;
+
+import "components/Manager/Manager.camkes";
+import "components/Lead/Lead.camkes";
+import "components/Member/Member.camkes";
+
+assembly {
+    composition {
+        component Manager manager;
+	    component Lead lead;
+	    component Member member;
+
+        connection seL4RPC h1(from manager.h2, to lead.h3);
+        connection seL4RPC h4(from lead.h5, to member.h6);
+    }
+}

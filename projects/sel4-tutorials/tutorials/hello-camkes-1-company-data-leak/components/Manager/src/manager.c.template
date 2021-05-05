@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <camkes.h>
+
+int run(void) {
+  printf("Manager shares confidential data with the Team Lead\n");
+  char *secret = "Payroll Records";
+  h2_talktolead(secret);
+  return 0;
+}

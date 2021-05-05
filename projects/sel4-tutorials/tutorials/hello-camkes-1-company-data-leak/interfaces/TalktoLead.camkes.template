@@ -1,0 +1,3 @@
+procedure TalktoLead {
+    void talktolead(in string str);
+};

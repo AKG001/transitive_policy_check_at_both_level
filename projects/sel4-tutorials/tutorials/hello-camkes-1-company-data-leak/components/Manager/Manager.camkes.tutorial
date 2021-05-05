@@ -1,0 +1,6 @@
+import "../../interfaces/TalktoLead.camkes";
+
+component Manager {
+    control;
+    uses TalktoLead h2;
+}

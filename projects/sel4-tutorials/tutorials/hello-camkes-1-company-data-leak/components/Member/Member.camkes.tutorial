@@ -1,0 +1,5 @@
+import "../../interfaces/TalktoMember.camkes";
+
+component Member {
+    provides TalktoMember h6;
+}

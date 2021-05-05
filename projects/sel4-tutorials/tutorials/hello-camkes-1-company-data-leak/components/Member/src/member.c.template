@@ -1,0 +1,6 @@
+#include <stdio.h>
+#include <camkes.h>
+
+void h6_talktomember(const char *secret) {
+  printf("Team Member got the confidential data from the Manager indirectly through the Team Lead. The data contains: %s.\n", secret);
+}
