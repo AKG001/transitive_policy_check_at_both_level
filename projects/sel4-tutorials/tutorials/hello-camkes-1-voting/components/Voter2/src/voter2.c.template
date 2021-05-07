@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <camkes.h>
+
+int run(void)
+{
+   printf("%s casts vote\n", get_instance_name());
+   h8_castvote("B");
+   return 0;
+}
+
+void h12_talktovoter(const char* voteleak)
+{
+   printf("%s learnt %s \n", get_instance_name(), voteleak);
+}

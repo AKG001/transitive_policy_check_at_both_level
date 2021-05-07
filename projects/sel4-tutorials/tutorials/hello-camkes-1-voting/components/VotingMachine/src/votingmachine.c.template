@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <camkes.h>
+
+#define Num_of_contestants 2
+
+int votes[Num_of_contestants], size = 0;
+
+void store_vote(const char* vote)
+{
+    if (strcmp(vote, "A") == 0)
+    {
+      votes[0]=votes[0]+1;
+      h11_talktovoter("vote cast to A");
+    }
+
+    else if (strcmp(vote, "B") == 0)
+    {
+      votes[1]=votes[1]+1;
+      h11_talktovoter("vote cast to B");
+    }
+
+    size++;
+
+    if (size == 2)
+    {
+     for (int i = 0; i < size; i++)
+     {
+        printf("%c got %d votes\n", (char)(65+i), votes[i]);
+     }
+    }
+}
+
+void h3_castvote(const char* vote)
+{
+  store_vote(vote);
+}
+
+void h9_castvote(const char* vote)
+{
+  store_vote(vote);
+}
+
+void h15_castvote(const char* vote)
+{
+  store_vote(vote);
+}

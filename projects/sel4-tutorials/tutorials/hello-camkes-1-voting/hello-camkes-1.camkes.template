@@ -1,0 +1,22 @@
+import <std_connector.camkes>;
+
+import "components/Voter1/Voter1.camkes";
+import "components/Voter2/Voter2.camkes";
+import "components/Voter3/Voter3.camkes";
+import "components/VotingMachine/VotingMachine.camkes";
+
+assembly {
+    composition {
+        component Voter1 voter1;
+        component Voter2 voter2;
+	    component Voter3 voter3;
+        component VotingMachine votingmachine;
+
+	    connection seL4RPC h1(from voter1.h2, to votingmachine.h3);
+	    connection seL4RPC h4(from votingmachine.h5, to voter1.h6);
+        connection seL4RPC h7(from voter2.h8, to votingmachine.h9);
+	    connection seL4RPC h10(from votingmachine.h11, to voter2.h12);
+	    connection seL4RPC h13(from voter3.h14, to votingmachine.h15);
+	    connection seL4RPC h16(from votingmachine.h17, to voter3.h18);
+    }
+}

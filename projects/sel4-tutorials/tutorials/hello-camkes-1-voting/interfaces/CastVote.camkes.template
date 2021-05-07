@@ -1,0 +1,3 @@
+procedure CastVote {
+    void castvote(in string vote);
+}

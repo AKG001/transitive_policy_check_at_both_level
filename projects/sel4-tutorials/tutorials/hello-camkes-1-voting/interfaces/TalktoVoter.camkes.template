@@ -1,0 +1,3 @@
+procedure TalktoVoter {
+    void talktovoter (in string voteleak);
+}

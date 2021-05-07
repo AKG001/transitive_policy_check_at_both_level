@@ -1,0 +1,11 @@
+import "../../interfaces/CastVote.camkes";
+import "../../interfaces/TalktoVoter.camkes";
+
+component VotingMachine {
+    provides CastVote h3;
+    uses TalktoVoter h5;
+    provides CastVote h9;
+    uses TalktoVoter h11;
+    provides CastVote h15;
+    uses TalktoVoter h17;
+}

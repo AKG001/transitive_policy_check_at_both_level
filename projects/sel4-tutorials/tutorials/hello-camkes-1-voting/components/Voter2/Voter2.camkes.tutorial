@@ -1,0 +1,8 @@
+import "../../interfaces/CastVote.camkes";
+import "../../interfaces/TalktoVoter.camkes";
+
+component Voter2 {
+    control;
+    uses CastVote h8;
+    provides TalktoVoter h12;
+}

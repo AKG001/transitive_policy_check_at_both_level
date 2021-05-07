@@ -33,3 +33,4 @@ Here is a brief overview of the examples:
 4. hello-camkes-1-timing-rpc: To calculate the number of RPC in 100 seconds. (Use kifs-camkes/timing.sh to run it, after changing the example name to hello-camkes-1)
 5. hello-camkes-1-paper-leak: Demonstrates that RWFM helps in preventing the paper leak from Professor to student via TA.
 6. hello-camkes-1-company-data-leak: Demonstrates that RWFM helps in preventing the data leak from Manager to team member via team lead.
+7. hello-camkes-1-voting: Demonstrates that RWFM helps in safe voting i.e. the voters do not get to know each others votes.
