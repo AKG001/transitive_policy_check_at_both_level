@@ -27,6 +27,7 @@ class RWFM:
 	self.num_objects = 0
 	self.subjects = {}
 	self.objects = {}
+        self.tcAccessControlMatrix = []
 
     #Add a new RWFM subject
     def add_a_subject(self, sub_id_index, owner, readers, writers):

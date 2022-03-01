@@ -14,7 +14,6 @@ component_list = {}
 connections_list = {}
 interfaces_list = {}
 rwfm_from_end_interface_list = {}
-
 seL4_as_owner = "0"
 
 logging_file = "rwfm_log"
@@ -176,3 +175,9 @@ def get_rwfm_object():
 
 def get_rwfm_from_end_interfaces_list():
     return rwfm_from_end_interface_list
+
+def save_tc_access_control_matrix(matrix):
+    rwfm.tcAccessControlMatrix = matrix
+
+def get_tc_access_control_matrix():
+    return rwfm.tcAccessControlMatrix

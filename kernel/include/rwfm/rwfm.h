@@ -11,17 +11,21 @@ OBJECT o[10];
 epMapping epMap[10];
 thrMapping thrMap[10];
 int dataFlowStatus[ns][no];
+// This table holds the closured access control matrix after the IFC Policy checking.
+int tcAccessControlMatrix[ns][ns];
 
 int strCmp(char* , char* );
 void handleRWFMSubReg(void);
 void handleRWFMIntReg(void);
 void handleRWFMEpReg(void);
 void handleRWFMThreadReg(void);
+void handleAccessControlMatrixEntry(void);
 void registerEpptrPerEp(endpoint_t* epptr, cptr_t ep);
 void uGetString(char [], char *, int *, char );
 int uGetNumber(char *, int *, char );
 int checkRWFMWrite(char *, endpoint_t *);
 int checkRWFMRead(char *, endpoint_t *);
+int checkRWFMFlowAllowed(char *sender, char *receiver);
 void rwfmUpdateLabels(char *, endpoint_t *);
 int getIntNo(char *, endpoint_t *);
 int isRWFMRequired(tcb_t *, tcb_t *);
@@ -209,7 +213,7 @@ int checkRWFMWrite(char *sender, endpoint_t* intEpptr)
       //kprintf("{%s}: Send interface number %d.", __func__, epMap[i].intNo);
       objIntNo = epMap[i].intNo;
       subIdNo = epMap[i].compNo;
-			epNo = epMap[i].epNo;
+      epNo = epMap[i].epNo;
       break;
     }
   }
@@ -376,4 +380,47 @@ void handleCheckDataFlowStatus(void)
 
 	setRegister(ksCurThread, msgRegisters[0], dataFlowStatus[compNo][epNo]);
 	dataFlowStatus[compNo][epNo] = 0;
+}
+
+void handleAccessControlMatrixEntry(void) {
+	int i = getRegister(ksCurThread, msgRegisters[0]);
+	int j = getRegister(ksCurThread, msgRegisters[1]);
+	int val = getRegister(ksCurThread, msgRegisters[2]);
+	tcAccessControlMatrix[i][j] = val;
+}
+
+int checkRWFMFlowAllowed(char *sender, char *receiver)
+{
+  char srcName[20], destName[20];
+  int left = 0, srcIdx, destIdx;
+  uGetString(srcName, sender, &left, ':');
+  left=0;
+  uGetString(destName, receiver, &left, ':');
+
+  srcIdx = destIdx = -1;
+
+  for(int i=0;i<currsub;i++)
+  {
+    if (!strCmp(srcName, s[i].compName))
+    {
+      //kprintf("{%s}: Sender index number %d.", __func__, s[i].sub_id_index);
+      srcIdx = s[i].sub_id_index;
+      break;
+    }
+  }
+
+  for(int i=0;i<currsub;i++)
+  {
+    if (!strCmp(destName, s[i].compName))
+    {
+      //kprintf("{%s}: Receiver index number %d.", __func__, s[i].sub_id_index);
+      destIdx = s[i].sub_id_index;
+      break;
+    }
+  }
+		int flag;
+		if (tcAccessControlMatrix[srcIdx][destIdx]) flag = SUCCESS;
+		else flag = FAILURE;
+		kprintf("{%s}: From {%s}: to {%s}, Flow Allowed: %d.\n", __func__, srcName, destName, !flag);
+		return flag;
 }

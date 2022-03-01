@@ -52,7 +52,13 @@ rwfm_CheckDataFlowStatus(seL4_Word compNo, seL4_Word epNo)
 {
     seL4_Word status;
     x64_sys_rwfm_CheckDataFlowStatus(seL4_Sysrwfm_CheckDataFlowStatus, compNo, epNo, &status);
-		return status;
+    return status;
+}
+
+LIBSEL4_INLINE_FUNC void
+rwfm_RegisterAccessControlMatrixEntry(seL4_Word i, seL4_Word j, seL4_Word val)
+{
+    x64_sys_rwfm_RegisterAccessControlMatrixEntry(seL4_Sysrwfm_RegisterAccessControlMatrixEntry, i, j, val);
 }
 
 LIBSEL4_INLINE_FUNC void

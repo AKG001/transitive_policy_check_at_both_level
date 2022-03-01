@@ -142,6 +142,7 @@ def new_context(entity, assembly, obj_space, cap_space, shmem, kept_symbols, fil
         'rwfm_subjects': get_subject_list(),
         'rwfm_objects': get_object_list(),
         'rwfm_from_end_interfaces': get_rwfm_from_end_interfaces_list(),
+        'rwfm_get_tc_access_control_matrix': get_tc_access_control_matrix(),
 
         # The AST assembly's configuration.
         'configuration':assembly.configuration,

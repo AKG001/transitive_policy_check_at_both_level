@@ -50,6 +50,7 @@ def CheckIfc(assembly, ast):
     ifcPolicyMatrix = get_ifcpolicy_rules(ast)
     if ifcPolicyMatrix is not None:
         print_graph(tcAccessControlMatrix, ifcPolicyMatrix)
+    return tcAccessControlMatrix
 
 def generate_adjacency_control_matrix(assembly):
     """Finds the component names and connections and \

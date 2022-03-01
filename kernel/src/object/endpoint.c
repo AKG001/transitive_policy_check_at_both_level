@@ -87,10 +87,15 @@ sendIPC(bool_t blocking, bool_t do_call, word_t badge,
         //		getIntNo(thread->tcbName, epptr), dest->tcbName, getIntNo(dest->tcbName, destEpptr));
         int flag = SUCCESS;
         if (reqStatus == SUCCESS) {
-          /* check whether write is allowed for sender or not. */
-          flag = checkRWFMWrite(thread->tcbName, epptr);
-          /* check whether read is allowed for receiver or not. */
-          flag = flag | checkRWFMRead(dest->tcbName, destEpptr);
+	  if (USING_IFC_POLICY)
+		/* If we are only checking the flow via the ifc policy.*/
+	  	flag = checkRWFMFlowAllowed(thread->tcbName, dest->tcbName);
+	  else {
+          	/* check whether write is allowed for sender or not. */
+          	flag = checkRWFMWrite(thread->tcbName, epptr);
+          	/* check whether read is allowed for receiver or not. */
+          	flag = flag | checkRWFMRead(dest->tcbName, destEpptr);
+	  }
         }
 
         if (flag == SUCCESS) {
@@ -185,11 +190,16 @@ receiveIPC(tcb_t *thread, cap_t cap, bool_t isBlocking)
 	    //kprintf("Status: %d \n", reqStatus);
 	    int flag = SUCCESS;
             if (reqStatus == SUCCESS) {
-              /* check whether write is allowed for sender or not. */
-              endpoint_t *srcEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&sender->tcbState);
-              flag = checkRWFMWrite(sender->tcbName, srcEpptr);
-              /* check whether read allowed for receiver or not.*/
-              flag = flag | checkRWFMRead(thread->tcbName, epptr);
+	      if (USING_IFC_POLICY)
+                /* If we are only checking the flow via the ifc policy.*/
+                flag = checkRWFMFlowAllowed(sender->tcbName, thread->tcbName);
+	      else {
+	              /* check whether write is allowed for sender or not. */
+	              endpoint_t *srcEpptr = (endpoint_t *)thread_state_ptr_get_blockingObject(&sender->tcbState);
+	              flag = checkRWFMWrite(sender->tcbName, srcEpptr);
+	              /* check whether read allowed for receiver or not.*/
+	              flag = flag | checkRWFMRead(thread->tcbName, epptr);
+	      }
             }
 
             if (flag == SUCCESS) {

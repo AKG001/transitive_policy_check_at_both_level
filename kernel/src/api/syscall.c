@@ -507,6 +507,9 @@ handleSyscall(syscall_t syscall)
     case Sysrwfm_CheckDataFlowStatus:
 	handleCheckDataFlowStatus();
 	break;
+    case Sysrwfm_RegisterAccessControlMatrixEntry:
+	handleAccessControlMatrixEntry();
+	break;
 
     default:
         fail("Invalid syscall");

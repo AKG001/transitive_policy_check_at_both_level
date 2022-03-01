@@ -106,6 +106,27 @@ x64_sys_rwfm_CheckDataFlowStatus(seL4_Word sys, seL4_Word msg0, seL4_Word msg1, 
 }
 
 static inline void
+x64_sys_rwfm_RegisterAccessControlMatrixEntry(seL4_Word sys, seL4_Word msg0, seL4_Word msg1, seL4_Word msg2)
+{
+    /*Todo: Add similar function in syscalls_sysenter.h file also, to be workable in 32-bit systems.*/
+    register seL4_Word mr0 asm("r10") = msg0;
+    register seL4_Word mr1 asm("r8") = msg1;
+    register seL4_Word mr2 asm("r9") = msg2;
+
+    asm volatile (
+        "movq   %%rsp, %%rbx    \n"
+        "syscall                \n"
+        "movq   %%rbx, %%rsp    \n"
+        :
+        : "d" (sys),
+	"r" (mr0),
+	"r" (mr1),
+	"r" (mr2)
+        : "%rcx", "%rbx", "r11"
+    );
+}
+
+static inline void
 x64_sys_send(seL4_Word sys, seL4_Word dest, seL4_Word info, seL4_Word msg0, seL4_Word msg1, seL4_Word msg2, seL4_Word msg3)
 {
     register seL4_Word mr0 asm("r10") = msg0;

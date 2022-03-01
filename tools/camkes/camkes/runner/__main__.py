@@ -437,7 +437,8 @@ def main(argv, out, err):
     if assembly is None:
         die('No assembly found')
     #(IFC POLICY)
-    CheckIfc(assembly, ast)
+    tcAccessControlMatrix = CheckIfc(assembly, ast)
+    save_tc_access_control_matrix(tcAccessControlMatrix)
 
     # RWFM BOUND STARTS
     #(RWFM) Figure out subjects (as clients) and connections.

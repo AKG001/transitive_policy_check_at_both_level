@@ -1066,6 +1066,14 @@ int USED main(int argc UNUSED, char *argv[]) {
 	rwfm_RegisterInterface("/*? me.instance.name ?*/:/*? obj[0] ?*/", intNo, owner, reader, writer);
       /*- endif -*/
     /*- endfor -*/
+
+    // Pass the transitive closured matrix to kernel from one component only.
+    // Adding +1 to the indices because index 0 is alloted to sel4_Owner.
+    /*- for i in range(0, len(rwfm_get_tc_access_control_matrix)): -*/
+      /*- for j in range(0, len(rwfm_get_tc_access_control_matrix)): -*/	
+	rwfm_RegisterAccessControlMatrixEntry(/*? i+1 ?*/, /*? j+1 ?*/, /*? rwfm_get_tc_access_control_matrix[i][j] ?*/);
+      /*- endfor -*/
+    /*- endfor -*/
     //RWFM: BOUND ENDS
 
     int thread_id = (int)(uintptr_t)(argv[1]);

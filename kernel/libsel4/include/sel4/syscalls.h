@@ -89,6 +89,17 @@ LIBSEL4_INLINE_FUNC seL4_Word
 rwfm_CheckDataFlowStatus(seL4_Word compNo, seL4_Word epNo);
 
 /**
+ * @xmlonly <manual name="rwfm_RegisterAccessControlMatrixEntry" label="rwfm_RegisterAccessControlMatrixEntry"/> @endxmlonly
+ * @brief Registers the flow value of 0 or 1 from node i to node j.
+ *
+ * @param[in] i The component number from where the data might flow.
+ * @param[in] j The component number to which the data will come.
+ * @param[in] val The flow value, bounded by {0, 1}.
+ */
+LIBSEL4_INLINE_FUNC void
+rwfm_RegisterAccessControlMatrixEntry(seL4_Word i, seL4_Word j, seL4_Word val);
+
+/**
  * @xmlonly <manual name="Send" label="sel4_send"/> @endxmlonly
  * @brief Send to a capability
  *

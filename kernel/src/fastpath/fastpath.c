@@ -138,8 +138,16 @@ fastpath_call(word_t cptr, word_t msgInfo)
 #endif /* ENABLE_SMP_SUPPORT */
 
     registerEpptrPerEp(ep_ptr, cptr);
-    if ((checkRWFMWrite(ksCurThread->tcbName, ep_ptr) ||
-	    checkRWFMRead(dest->tcbName, ep_ptr)) == SUCCESS) {
+    int flag;
+    if (USING_IFC_POLICY)
+     /* If we are only checking the flow via the ifc policy.*/
+     flag = checkRWFMFlowAllowed(ksCurThread->tcbName, dest->tcbName);
+    else
+     /* If we are going to check via the RWFM. */
+     flag = checkRWFMWrite(ksCurThread->tcbName, ep_ptr) ||
+            checkRWFMRead(dest->tcbName, ep_ptr);
+
+    if (flag) {
     /*
      * --- POINT OF NO RETURN ---
      *

@@ -2,7 +2,7 @@
 
 #define SUCCESS 0
 #define FAILURE 1
-
+#define USING_IFC_POLICY 1
 typedef unsigned long int USER_SET;
 typedef unsigned int uint;
 
