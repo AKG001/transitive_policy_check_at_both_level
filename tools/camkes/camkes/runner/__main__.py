@@ -52,6 +52,9 @@ from capdl import seL4_CapTableObject, ObjectAllocator, CSpaceAllocator, \
 
 from camkes.parser import parse_file, ParseError
 
+#(IFC POLICY)
+from camkes.runner.IfcPolicy import *
+
 #RWFM BOUND STARTS HERE
 #Integrating RWFM extension
 from camkes.runner.rwfm_extension import *
@@ -433,6 +436,8 @@ def main(argv, out, err):
     assembly = ast.assembly
     if assembly is None:
         die('No assembly found')
+    #(IFC POLICY)
+    CheckIfc(assembly, ast)
 
     # RWFM BOUND STARTS
     #(RWFM) Figure out subjects (as clients) and connections.
@@ -800,11 +805,6 @@ def main(argv, out, err):
                         done(g, outfile, item)
                     except TemplateError as inst:
                         die(rendering_error(item, inst))
-
-    #for i in ast._items:
-    #    print ("rpc start")
-    #    print (i.__dict__)
-    #    print ("rpc end")
 
     # Perform any per component special generation. This needs to happen last
     # as these template needs to run after all other capabilities have been

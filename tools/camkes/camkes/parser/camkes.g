@@ -16,7 +16,7 @@
 
 start: (assembly_decl | component_decl | composition_decl |
         configuration_decl | connector_decl | import |
-        procedure_decl | struct_decl | /* Allow empty statements: */ ';')*;
+        procedure_decl | struct_decl | ifcpolicy_decl | /* Allow empty statements: */ ';')*;
 
 ID: '[a-zA-Z_]\w*'
         /* Everything that's a keyword ends up matching ID, so we need to
@@ -78,6 +78,7 @@ ID: '[a-zA-Z_]\w*'
             USES: 'uses';
             VOID: 'void';
             WITH: 'with';
+            IFCPOLICY: 'ifcpolicy';
             );
 /* For the case where we need an AST-visible ID */
 id: ID | BUF;
@@ -85,6 +86,9 @@ id: ID | BUF;
 assembly_decl: ASSEMBLY id? assembly_defn;
 assembly_defn: '\{' composition_sing configuration_sing? '\}'
              | '\{' configuration_sing composition_sing '\}';
+
+ifcpolicy_decl: IFCPOLICY id? '\{' (ifcpolicy_defn)* '\}';
+ifcpolicy_defn:  FROM reference TO reference ';'; 
 
 composition_sing: COMPOSITION reference ';'
                 | composition_decl;

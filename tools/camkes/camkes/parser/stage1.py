@@ -50,6 +50,7 @@ class Parse1(Parser):
         processed, read = self.parse0.parse_file(filename)
         try:
             ast_raw = _parse(processed)
+            #print (ast_raw)
         except plyplus.ParseError as e:
             location = SourceLocation(filename, e, processed)
             e = augment_exception(e)

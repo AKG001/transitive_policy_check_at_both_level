@@ -468,6 +468,31 @@ class Instance(ASTObject):
     def __str__(self):
         return self.name
 
+class IfcPolicy_defn(ASTObject):
+    child_fields = ('srcComponent', 'dstComponent',)
+
+    def __init__(self, src, dst, location=None):
+        assert isinstance(src, Reference)
+        assert isinstance(dst, Reference)
+        super(IfcPolicy_defn, self).__init__(location)
+        self.srcComponent = src
+        self.dstComponent = dst
+
+    @property
+    def instance(self):
+        return self
+
+class IfcPolicy(ASTObject):
+    child_fields = ('definitions',)
+
+    def __init__(self, policy_defn, location=None):
+        super(IfcPolicy, self).__init__(location)
+        self.definitions = policy_defn
+
+    @property
+    def instance(self):
+        return self
+
 class Connection(ASTObject):
     child_fields = ('from_ends', 'to_ends', 'type')
 

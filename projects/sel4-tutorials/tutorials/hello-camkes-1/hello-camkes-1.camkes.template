@@ -13,4 +13,10 @@ assembly {
         connection seL4RPC h1(from client1.h2, to echo.h3);
         connection seL4RPC h4(from echo.h5, to client2.h6);
    }
-}
+};
+
+ifcpolicy{
+	from client1 to echo;
+	from echo to client2;
+	from client1 to client2;
+};

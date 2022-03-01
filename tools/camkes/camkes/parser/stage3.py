@@ -28,7 +28,8 @@ from camkes.ast import Assembly, Attribute, AttributeReference, Component, \
     Composition, Configuration, Connection, ConnectionEnd, Connector, \
     Consumes, Dataport, Emits, Export, Group, Include, Instance, Interface, \
     LiftedAST, Method, Mutex, normalise_type, Parameter, Procedure, Provides, \
-    Reference, Semaphore, BinarySemaphore, Setting, SourceLocation, Uses, Struct
+    Reference, Semaphore, BinarySemaphore, Setting, SourceLocation, Uses, Struct, \
+    IfcPolicy_defn, IfcPolicy
 from .base import Parser
 from .exception import ParseError
 import numbers, plyplus, re, six
@@ -455,6 +456,15 @@ def _lift_hardware(location, *_):
 def _lift_instance_defn(location, component_ref, id):
     return Instance(component_ref, id, location)
 
+def _lift_ifcpolicy_defn(location, *args):
+    src = args[0]
+    dst = args[1]
+    return IfcPolicy_defn(src, dst, location)
+
+
+def _lift_ifcpolicy_decl(location, *args):
+    return IfcPolicy(args, location)
+
 def _lift_list(location, *args):
     return [strip_quotes(x) for x in args]
 
@@ -701,6 +711,8 @@ LIFT = {
     'id':_collapse,
     'include':_lift_include,
     'instance_defn':_lift_instance_defn,
+    'ifcpolicy_defn':_lift_ifcpolicy_defn,
+    'ifcpolicy_decl':_lift_ifcpolicy_decl,
     'list':_lift_list,
     'logical_not':_lift_logical_not,
     'maybe':_collapse,
